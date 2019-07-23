@@ -37,12 +37,12 @@ export class MainService {
   }
 
   logOut() {
-    sessionStorage.removeItem(this.tokenName);
+    localStorage.removeItem(this.tokenName);
     this.router.navigate(['/login']);
   }
 
   decodeToken() {
-    const token = sessionStorage.getItem(this.tokenName);
+    const token = localStorage.getItem(this.tokenName);
     try {
       if (!this.jwtHelper.isTokenExpired(token)) {
         return this.jwtHelper.decodeToken(token);

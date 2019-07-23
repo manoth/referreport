@@ -20,10 +20,10 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private main: MainService
   ) {
-    const token = sessionStorage.getItem(this.tokenName);
+    const token = localStorage.getItem(this.tokenName);
     try {
       if (!this.jwtHelper.isTokenExpired(token)) {
-        this.router.navigate(['list']);
+        this.router.navigate(['/referin']);
       }
     } catch (err) {
       this.main.logOut();
@@ -35,7 +35,28 @@ export class LoginComponent implements OnInit {
   }
 
   async login() {
-    console.log(this.sign);
+    if (this.sign.username && this.sign.password) {
+      const row: any = await this.main.post('login', this.sign);
+      console.log(row);
+      if (row.ok) {
+        localStorage.setItem(this.tokenName, row.token);
+        this.router.navigate(['/referin']);
+      } else {
+        // this.sign.username = '';
+        // this.sign.password = '';
+        Swal.fire({
+          type: 'error',
+          text: row.data,
+          allowOutsideClick: false
+        });
+      }
+    } else {
+      Swal.fire({
+        type: 'info',
+        text: 'กรุณากรอก Username และ Password ด้วย',
+        allowOutsideClick: false
+      });
+    }
   }
 
 }

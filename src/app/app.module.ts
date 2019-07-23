@@ -11,6 +11,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { ReferInComponent } from './pages/refer-in/refer-in.component';
+import { LayoutComponent } from './pages/layout/layout.component';
+import { HeaderComponent } from './layouts/header/header.component';
+import { FooterComponent } from './layouts/footer/footer.component';
 
 
 
@@ -18,7 +22,11 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
   declarations: [
     AppComponent,
     LoginComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    ReferInComponent,
+    LayoutComponent,
+    HeaderComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,

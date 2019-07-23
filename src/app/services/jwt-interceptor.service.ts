@@ -11,7 +11,7 @@ export class JwtInterceptorService {
     @Inject('TOKENNAME') private tokenName: string
   ) { }
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const token = sessionStorage.getItem(this.tokenName);
+    const token = localStorage.getItem(this.tokenName);
     if (token) {
       request = request.clone({
         setHeaders: {

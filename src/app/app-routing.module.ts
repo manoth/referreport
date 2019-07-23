@@ -3,18 +3,20 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthGuardService } from './services/auth-guard.service';
 
 import { LoginComponent } from './login/login.component';
-import { AppComponent } from './app.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { LayoutComponent } from './pages/layout/layout.component';
+import { ReferInComponent } from './pages/refer-in/refer-in.component';
 
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   {
-    path: '', component: AppComponent,
+    path: '', component: LayoutComponent,
     canActivate: [AuthGuardService],
     children: [
-      { path: '', redirectTo: 'list', pathMatch: 'full' }
+      { path: '', redirectTo: 'referin', pathMatch: 'full' },
+      { path: 'referin', component: ReferInComponent }
     ]
   },
   { path: '**', component: PageNotFoundComponent, pathMatch: 'full' }
