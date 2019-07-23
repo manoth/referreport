@@ -1,0 +1,38 @@
+<div class="login-box">
+    <div class="login-logo">
+        <b>ระบบ R9Refer</b>
+    </div>
+    <!-- /.login-logo -->
+    <div class="login-box-body">
+        <p class="login-box-msg">Sign in to start your session</p>
+
+        <form>
+            <div class="form-group has-feedback">
+                <input type="text" id="username" name="username" [(ngModel)]="sign.username" class="form-control"
+                    placeholder="Username" autofocus>
+                <span class="glyphicon glyphicon-user form-control-feedback"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <input type="password" id="password" name="password" [(ngModel)]="sign.password" class="form-control"
+                    placeholder="Password">
+                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            </div>
+            <div class="row">
+                <div class="col-xs-8">
+                    <div class="checkbox icheck">
+                    </div>
+                </div>
+                <!-- /.col -->
+                <div class="col-xs-4">
+                    <button class="btn btn-primary btn-block btn-flat" (click)="login()">
+                        <i class="fa fa-sign-in" aria-hidden="true"></i>
+                        Sign In
+                    </button>
+                </div>
+                <!-- /.col -->
+            </div>
+        </form>
+
+    </div>
+    <!-- /.login-box-body -->
+</div>
