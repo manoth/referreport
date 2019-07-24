@@ -37,7 +37,6 @@ export class LoginComponent implements OnInit {
   async login() {
     if (this.sign.username && this.sign.password) {
       const row: any = await this.main.post('login', this.sign);
-      console.log(row);
       if (row.ok) {
         localStorage.setItem(this.tokenName, row.token);
         this.router.navigate(['/referin']);

@@ -15,6 +15,7 @@ import { ReferInComponent } from './pages/refer-in/refer-in.component';
 import { LayoutComponent } from './pages/layout/layout.component';
 import { HeaderComponent } from './layouts/header/header.component';
 import { FooterComponent } from './layouts/footer/footer.component';
+import { MonitorComponent } from './monitor/monitor.component';
 
 
 
@@ -26,7 +27,8 @@ import { FooterComponent } from './layouts/footer/footer.component';
     ReferInComponent,
     LayoutComponent,
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
+    MonitorComponent
   ],
   imports: [
     BrowserModule,

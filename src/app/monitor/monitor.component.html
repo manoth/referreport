@@ -1,0 +1,82 @@
+<div class="box box-success box-solid">
+    <div class="box-header with-border" style="height: 80px;">
+        <h3 class="box-title" style="font-size: 40px;">
+            รายการ Refer In ของ {{ hospital?.hospname }}
+        </h3>
+
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-toggle="modal" data-target="#modal-default"
+                data-backdrop="static" data-keyboard="false">
+                <i class="fa fa-cogs" aria-hidden="true"></i>
+            </button>
+        </div>
+        <!-- /.box-tools -->
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+        <table class="table table-striped">
+            <tbody style="font-size: 20px;">
+                <tr>
+                    <th class="text-center" style="height: 80px;">#</th>
+                    <th class="text-center">Refer จาก</th>
+                    <th class="text-center">ชื่อ-สกุลผู้ป่วย</th>
+                    <th class="text-center">วันที่</th>
+                    <th class="text-center">เวลาออกเดินทาง</th>
+                    <th class="text-center">สถานะ</th>
+                </tr>
+                <tr *ngFor="let r of referIn; let i=index;">
+                    <td class="text-center" style="height: 80px;">{{ i+1 }}.</td>
+                    <td>{{ r.hospname }}</td>
+                    <td>{{ r.pname }}{{ r.fname }} {{ r.lname }}</td>
+                    <td class="text-center">{{ dateFormat(r.load_date || r.refer_date) }}</td>
+                    <td class="text-center">{{ r.load_time || r.refer_time }}</td>
+                    <td>{{ r.level_name }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- /.box-body -->
+</div>
+
+<div class="modal fade" id="modal-default">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button> -->
+                <h4 class="modal-title">ตั้งค่าสถานบริการ</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="inputHospcode" class="col-sm-3 control-label">รหัสสถานบริการ: </label>
+
+                            <div class="col-sm-9">
+                                <input type="text" [(ngModel)]="monit.hospcode" name="hospcode" class="form-control"
+                                    id="inputHospcode" placeholder="รหัสสถานบริการ">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputToken" class="col-sm-3 control-label">Token: </label>
+
+                            <div class="col-sm-9">
+                                <input type="password" [(ngModel)]="monit.token" name="token" class="form-control"
+                                    id="inputToken" placeholder="Token">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"
+                    [disabled]="true">Close</button>
+                <button type="button" class="btn btn-primary" (click)="doSave(monit.hospcode,monit.token)">Save</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
