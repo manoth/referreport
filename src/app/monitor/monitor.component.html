@@ -1,13 +1,13 @@
 <div class="box box-success box-solid">
     <div class="box-header with-border" style="height: 80px;">
-        <h3 class="box-title" style="font-size: 40px;">
+        <h3 class="box-title" style="font-size: 40px; padding-top: 8px;">
             รายการ Refer In ของ {{ hospital?.hospname }}
         </h3>
 
-        <div class="box-tools pull-right">
+        <div class="box-tools pull-right" style="padding-top: 8px;">
             <button type="button" class="btn btn-box-tool" data-toggle="modal" data-target="#modal-default"
                 data-backdrop="static" data-keyboard="false">
-                <i class="fa fa-cogs" aria-hidden="true"></i>
+                <i class="fa fa-cogs fa-3x" aria-hidden="true"></i>
             </button>
         </div>
         <!-- /.box-tools -->
@@ -23,6 +23,7 @@
                     <th class="text-center">วันที่</th>
                     <th class="text-center">เวลาออกเดินทาง</th>
                     <th class="text-center">สถานะ</th>
+                    <th class="text-center">With</th>
                 </tr>
                 <tr *ngFor="let r of referIn; let i=index;">
                     <td class="text-center" style="height: 80px;">{{ i+1 }}.</td>
@@ -31,6 +32,7 @@
                     <td class="text-center">{{ dateFormat(r.load_date || r.refer_date) }}</td>
                     <td class="text-center">{{ r.load_time || r.refer_time }}</td>
                     <td>{{ r.level_name }}</td>
+                    <td>{{ r.loads_name }}</td>
                 </tr>
             </tbody>
         </table>
