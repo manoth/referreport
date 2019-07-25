@@ -12,6 +12,7 @@ declare const $: any;
 })
 export class MonitorComponent implements OnInit {
 
+  today: number = Date.now();
   private socket: SocketIOClient.Socket;
 
   monit = new Monit();
@@ -21,6 +22,7 @@ export class MonitorComponent implements OnInit {
   constructor(
     private main: MainService
   ) {
+    setInterval(() => { this.today = Date.now() }, 1);
     this.socket = io('http://203.157.182.3:3000');
   }
 
