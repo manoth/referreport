@@ -4,11 +4,11 @@ import { CryptoService } from 'src/app/services/crypto.service';
 import { MainService } from 'src/app/services/main.service';
 
 @Component({
-  selector: 'app-refer-in',
-  templateUrl: './refer-in.component.html',
-  styleUrls: ['./refer-in.component.scss']
+  selector: 'app-refer-back',
+  templateUrl: './refer-back.component.html',
+  styleUrls: ['./refer-back.component.scss']
 })
-export class ReferInComponent implements OnInit {
+export class ReferBackComponent implements OnInit {
 
   user: any;
   lists: any;
@@ -17,10 +17,11 @@ export class ReferInComponent implements OnInit {
     private router: Router,
     private crypto: CryptoService,
     private main: MainService
+
   ) { }
 
   ngOnInit() {
-    this.main.inputHeader({ path: '/referin', name: 'Refer In', icon: 'fa-sign-in', ifdname: false, dname: '' });
+    this.main.inputHeader({ path: '/referback', name: 'Refer Back', icon: 'fa-retweet', ifdname: false, dname: '' });
     this.user = this.main.decodeToken();
     this.getReferinList();
   }

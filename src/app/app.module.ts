@@ -7,6 +7,8 @@ import { JwtInterceptorService } from './services/jwt-interceptor.service';
 import { ErrorInterceptorService } from './services/error-interceptor.service';
 import { environment } from 'src/environments/environment';
 
+import { ThaiDatePipe } from './pipes/thaidate.pipe';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
@@ -16,11 +18,18 @@ import { LayoutComponent } from './pages/layout/layout.component';
 import { HeaderComponent } from './layouts/header/header.component';
 import { FooterComponent } from './layouts/footer/footer.component';
 import { MonitorComponent } from './monitor/monitor.component';
+import { ReferOutComponent } from './pages/refer-out/refer-out.component';
+import { ReferBackComponent } from './pages/refer-back/refer-back.component';
+import { ReferBackDetailComponent } from './pages/refer-back-detail/refer-back-detail.component';
+import { ReferOutDetailComponent } from './pages/refer-out-detail/refer-out-detail.component';
+import { ReferInDetailComponent } from './pages/refer-in-detail/refer-in-detail.component';
+import { ContentHeaderComponent } from './layouts/content-header/content-header.component';
 
 
 
 @NgModule({
   declarations: [
+    ThaiDatePipe,
     AppComponent,
     LoginComponent,
     PageNotFoundComponent,
@@ -28,7 +37,13 @@ import { MonitorComponent } from './monitor/monitor.component';
     LayoutComponent,
     HeaderComponent,
     FooterComponent,
-    MonitorComponent
+    MonitorComponent,
+    ReferOutComponent,
+    ReferBackComponent,
+    ReferBackDetailComponent,
+    ReferOutDetailComponent,
+    ReferInDetailComponent,
+    ContentHeaderComponent
   ],
   imports: [
     BrowserModule,
@@ -42,7 +57,8 @@ import { MonitorComponent } from './monitor/monitor.component';
     { provide: 'apiUrl', useValue: environment.apiUrl },
     { provide: 'SECRET_KEY', useValue: environment.SECRET_KEY },
     { provide: 'TOKENNAME', useValue: environment.tokenName },
-    { provide: 'SYSTEMNAME', useValue: environment.systemName }
+    { provide: 'SYSTEMNAME', useValue: environment.systemName },
+    { provide: 'RERFERPATH', useValue: environment.pathRoute }
   ],
   bootstrap: [AppComponent]
 })

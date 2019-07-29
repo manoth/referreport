@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@angular/core';
+import { Injectable, Inject, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
@@ -10,6 +10,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 export class MainService {
 
   public jwtHelper = new JwtHelperService();
+  public dataHeader = new EventEmitter();
 
   constructor(
     @Inject('apiUrl') private apiUrl: string,
@@ -54,6 +55,10 @@ export class MainService {
       this.logOut();
       return false;
     }
+  }
+
+  inputHeader(data: any) {
+    this.dataHeader.emit(data);
   }
 
 }

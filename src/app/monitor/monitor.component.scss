@@ -5,7 +5,7 @@
 }
 
 .bg-ping {
-    background-color: palevioletred;
+    background-color:palevioletred;
 }
 
 .bg-yellow {
@@ -27,6 +27,22 @@
     border-color: grey;
 }
 
+.bg-cyan {
+    background-color: cyan;
+}
+
 td {
   height: 70px;
 }
+
+// tbody>tr:hover {
+//     background-color: red;
+//     color: white;
+//     transition: all 3s ease-out; 
+// }
+
+// .box  {
+// background-color: red;
+// transition: all 3s ease-out; 
+// }
+

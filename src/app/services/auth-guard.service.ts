@@ -1,4 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { MainService } from './main.service';
@@ -12,10 +13,13 @@ export class AuthGuardService {
 
   constructor(
     @Inject('TOKENNAME') private tokenName: string,
+    @Inject('RERFERPATH') private referPath: string,
     private main: MainService
   ) { }
 
-  canActivate() {
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    // console.log(state.url);
+    sessionStorage.setItem(this.referPath, state.url);
     const token = localStorage.getItem(this.tokenName);
     try {
       if (this.jwtHelper.isTokenExpired(token)) {

@@ -1,9 +1,13 @@
 <div class="box box-primary box-solid bg-grey1">
     <div class="box-header with-border" style="height: 80px;">
+        <button type="button" (click)="goFullscreen()">
+            <i class="fa fa-arrows-alt fa-3x" aria-hidden="true"></i>
+        </button>
+        &nbsp;&nbsp;
         <h3 class="box-title" style="font-size: 40px; padding-top: 8px;">
             รายการ Refer In ของ {{ hospital?.hospname }}
             &nbsp;&nbsp;&nbsp;&nbsp;
-            {{today | date:'fullDate'}} {{today | date:'h:mm:ss a'}}
+            {{today | thaidate:'medium'}} &nbsp;&nbsp; เวลา {{today | date:'H:mm:ss'}}
         </h3>
         <div class="box-tools pull-right" style="padding-top: 8px;">
             <button type="button" class="btn btn-box-tool" data-toggle="modal" data-target="#modal-default"
@@ -16,24 +20,31 @@
     <!-- /.box-header -->
     <div class="box-body bg-grey">
         <table class="table">
-            <tbody style="font-size: 20px;">
+            <thead style="font-size: 25px;">
                 <tr class="bg-black">
                     <th class="text-center">#</th>
-                    <th class="text-center">Refer จาก</th>
-                    <th class="text-center">ชื่อ-สกุลผู้ป่วย</th>
+                    <th class="text-center">จาก</th>
+                    <th class="text-center">ชื่อ-สกุล</th>
                     <th class="text-center">วันที่</th>
-                    <th class="text-center">เวลาออกเดินทาง</th>
-                    <!-- <th class="text-center">เวลาที่ใช้ไป</th> -->
+                    <th class="text-center">เริ่มเดินทาง</th>
+                    <th class="text-center">เวลาที่ใช้</th>
                     <th class="text-center">สถานะ</th>
-                    <th class="text-center">With</th>
+                    <th class="text-center">มาด้วย</th>
                 </tr>
-                <tr *ngFor="let r of referIn; let i=index;" [ngClass]="{'bg-grey1': i%2==0, 'bg-grey2': i%2==1}">
+            </thead>
+            <tbody style="font-size: 25px;">
+                <tr *ngFor="let r of referIn; let i=index;" [ngClass]="{'bg-grey1': i%2==0, 'bg-grey2': i%2==1}"
+                    id="bg{{r.refer_no}}">
                     <td class="text-center"><span class="badge bg-red">{{ i+1 }}.</span></td>
-                    <td>{{ r.hospname }}</td>
+                    <td>{{ replaceHospname(r.hospname) }}</td>
                     <td>{{ r.pname }}{{ r.fname }} {{ r.lname }}</td>
-                    <td class="text-center">{{ dateFormat(r.refer_date) }}</td>
-                    <td class="text-center">{{ r.load_time || r.refer_time }}</td>
-                    <!-- <td class="text-center">{{ today | date:'h:mm:ss a' }}</td> -->
+                    <td class="text-center">
+                        {{ ((r.load_date.slice(0, 4)!=0000)?r.load_date:null || r.refer_date) | thaidate:'short' }}
+                    </td>
+                    <td class="text-center">{{ ('0'+(r?.load_time || r?.refer_time)).substr(-5) }}:00</td>
+                    <td class="text-center">
+                        {{ counterTime(r?.refer_date, (r?.load_time || r?.refer_time)) }}
+                    </td>
                     <td [ngClass]="{
                         'bg-red': r.level_acute==01 || r.level_acute==02,
                         'bg-ping': r.level_acute==03 || r.level_acute==04,
@@ -79,8 +90,6 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"
-                    [disabled]="true">Close</button>
                 <button type="button" class="btn btn-primary" (click)="doSave(monit.hospcode,monit.token)">Save</button>
             </div>
         </div>

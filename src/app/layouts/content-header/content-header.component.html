@@ -1,0 +1,15 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h1>
+        {{ header?.name }}
+        <small>{{user?.hospname}}</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a [routerLink]="[header?.path]" class="active">
+                <i class="fa" [ngClass]="header?.icon"></i> {{ header?.name }}
+            </a>
+        </li>
+        <li class="active" *ngIf="header.ifdname">{{ header?.dname }}</li>
+    </ol>
+</section>

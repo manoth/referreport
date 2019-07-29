@@ -17,6 +17,7 @@ export class LoginComponent implements OnInit {
 
   constructor(
     @Inject('TOKENNAME') private tokenName: string,
+    @Inject('RERFERPATH') private referPath: string,
     private router: Router,
     private main: MainService
   ) {
@@ -37,9 +38,11 @@ export class LoginComponent implements OnInit {
   async login() {
     if (this.sign.username && this.sign.password) {
       const row: any = await this.main.post('login', this.sign);
+      // console.log(row);
       if (row.ok) {
         localStorage.setItem(this.tokenName, row.token);
-        this.router.navigate(['/referin']);
+        const toDetail = sessionStorage.getItem(this.referPath);
+        (!toDetail) ? this.router.navigate(['/referin']) : this.router.navigate([toDetail]);
       } else {
         // this.sign.username = '';
         // this.sign.password = '';
