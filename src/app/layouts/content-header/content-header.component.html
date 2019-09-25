@@ -1,15 +1,23 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
+        <i class="fa" [ngClass]="header?.icon"></i>
         {{ header?.name }}
-        <small>{{user?.hospname}}</small>
+        <small *ngIf="header?.subname">{{header?.subname}}</small>
+        <small *ngIf="!header?.subname">{{user?.hospname}}</small>
     </h1>
     <ol class="breadcrumb">
         <li>
-            <a [routerLink]="[header?.path]" class="active">
-                <i class="fa" [ngClass]="header?.icon"></i> {{ header?.name }}
+            <a [routerLink]="['/']" class="active">
+                <i class="fa fa-home" aria-hidden="true"></i>
+                R9Refer
             </a>
         </li>
-        <li class="active" *ngIf="header.ifdname">{{ header?.dname }}</li>
+        <li [ngClass]="{'active': !header?.ifdname}">
+            <a [routerLink]="[header?.path]">
+                {{ header?.name }}
+            </a>
+        </li>
+        <li class="active" *ngIf="header?.ifdname">{{ header?.dname }}</li>
     </ol>
 </section>

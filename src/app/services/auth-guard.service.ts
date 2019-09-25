@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
-import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
 
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { MainService } from './main.service';
@@ -14,6 +14,7 @@ export class AuthGuardService {
   constructor(
     @Inject('TOKENNAME') private tokenName: string,
     @Inject('RERFERPATH') private referPath: string,
+    private router: Router,
     private main: MainService
   ) { }
 
@@ -26,7 +27,13 @@ export class AuthGuardService {
         this.main.logOut();
         return false;
       } else {
-        return true;
+        const decoded = this.jwtHelper.decodeToken(token);
+        if (decoded.status > '0') {
+          return true;
+        } else {
+          this.router.navigate(['/adduser']);
+          return false;
+        }
       }
     } catch (err) {
       this.main.logOut();

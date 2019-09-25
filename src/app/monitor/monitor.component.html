@@ -1,56 +1,58 @@
-<div class="box box-primary box-solid bg-grey1">
+<div class="box box-solid bg-blue31">
     <div class="box-header with-border" style="height: 80px;">
-        <button type="button" (click)="goFullscreen()">
+        <a href="javascript:void(0)" (click)="goFullscreen()">
             <i class="fa fa-arrows-alt fa-3x" aria-hidden="true"></i>
-        </button>
+        </a>
         &nbsp;&nbsp;
-        <h3 class="box-title" style="font-size: 40px; padding-top: 8px;">
-            รายการ Refer In ของ {{ hospital?.hospname }}
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            {{today | thaidate:'medium'}} &nbsp;&nbsp; เวลา {{today | date:'H:mm:ss'}}
-        </h3>
+        <p class="box-title" style="font-size: 38px; padding-top: 8px; font-weight: bold;">
+            รายการ {{referTitle}} ของ {{ replaceHospname(hospital?.hospname) }}
+            &nbsp;&nbsp;&nbsp;
+            {{today | thaidate:'medium'}} &nbsp; เวลา {{today | date:'H:mm:ss'}}
+        </p>
         <div class="box-tools pull-right" style="padding-top: 8px;">
-            <button type="button" class="btn btn-box-tool" data-toggle="modal" data-target="#modal-default"
-                data-backdrop="static" data-keyboard="false">
+            <a href="javascript:void(0)" data-toggle="modal" data-target="#modal-default" data-backdrop="static"
+                data-keyboard="false">
                 <i class="fa fa-cogs fa-3x" aria-hidden="true"></i>
-            </button>
+            </a>
         </div>
         <!-- /.box-tools -->
     </div>
     <!-- /.box-header -->
-    <div class="box-body bg-grey">
-        <table class="table">
-            <thead style="font-size: 25px;">
-                <tr class="bg-black">
-                    <th class="text-center">#</th>
-                    <th class="text-center">จาก</th>
-                    <th class="text-center">ชื่อ-สกุล</th>
-                    <th class="text-center">วันที่</th>
-                    <th class="text-center">เริ่มเดินทาง</th>
-                    <th class="text-center">เวลาที่ใช้</th>
-                    <th class="text-center">สถานะ</th>
-                    <th class="text-center">มาด้วย</th>
+    <div class="box-body bg-blue31">
+        <table class="table table-bordered textmiddle" style="border: 4px solid #f4f4f4;">
+            <thead>
+                <tr class="bg-blue">
+                    <th>#</th>
+                    <th *ngIf="chechTypeRefer">จาก</th>
+                    <th *ngIf="!chechTypeRefer">ถึง</th>
+                    <th>ชื่อ-สกุล</th>
+                    <th>วันที่</th>
+                    <th>เริ่มเดินทาง</th>
+                    <th>เวลาที่ใช้</th>
+                    <th>สถานะ</th>
+                    <th>เดินทางด้วย</th>
                 </tr>
             </thead>
-            <tbody style="font-size: 25px;">
-                <tr *ngFor="let r of referIn; let i=index;" [ngClass]="{'bg-grey1': i%2==0, 'bg-grey2': i%2==1}"
-                    id="bg{{r.refer_no}}">
-                    <td class="text-center"><span class="badge bg-red">{{ i+1 }}.</span></td>
-                    <td>{{ replaceHospname(r.hospname) }}</td>
-                    <td>{{ r.pname }}{{ r.fname }} {{ r.lname }}</td>
+            <tbody>
+                <tr *ngFor="let r of referIn; let i=index;" class="bg-black" id="bg{{r.refer_no}}">
+                    <td class="text-center">{{ i+1 }}.</td>
+                    <td *ngIf="chechTypeRefer">{{ replaceHospname(r?.from_hospname) }}</td>
+                    <td *ngIf="!chechTypeRefer">{{ replaceHospname(r?.refer_hospname) }}</td>
+                    <td>{{ r?.pname }}{{ r?.fname }} {{ r?.lname }}</td>
                     <td class="text-center">
-                        {{ ((r.load_date.slice(0, 4)!=0000)?r.load_date:null || r.refer_date) | thaidate:'short' }}
+                        {{ r?.load_date | thaidate:'short' }}
                     </td>
-                    <td class="text-center">{{ ('0'+(r?.load_time || r?.refer_time)).substr(-5) }}:00</td>
-                    <td class="text-center">
-                        {{ counterTime(r?.refer_date, (r?.load_time || r?.refer_time)) }}
+                    <td class="text-center" style="font-family: 'Sarabun', sans-serif;">
+                        {{ r?.load_time }}:00</td>
+                    <td class="text-center" style="font-family: 'Sarabun', sans-serif;">
+                        {{ counterTime(r?.load_date, r?.load_time) }}
                     </td>
-                    <td [ngClass]="{
+                    <td style="font-size: 20px" [ngClass]="{
                         'bg-red': r.level_acute==01 || r.level_acute==02,
-                        'bg-ping': r.level_acute==03 || r.level_acute==04,
+                        'bg-fuchsia': r.level_acute==03 || r.level_acute==04,
                         'bg-yellow': r.level_acute==05
-                    }">{{ r.level_name }}</td>
-                    <td>{{ r.loads_name }}</td>
+                    }">{{ r?.level_name }}</td>
+                    <td>{{ r?.loads_name }}</td>
                 </tr>
             </tbody>
         </table>
@@ -58,21 +60,23 @@
     <!-- /.box-body -->
 </div>
 
-<div class="modal fade" id="modal-default">
+<div class="modal fade" id="modal-default" style="font-family: 'Kanit', sans-serif;">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-green">
                 <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button> -->
-                <h4 class="modal-title">ตั้งค่าสถานบริการ</h4>
+                <h4 class="modal-title" style="font-family: 'Kanit', sans-serif;">
+                    <i class="fa fa-cogs" aria-hidden="true"></i>
+                    ตั้งค่าสถานบริการ
+                </h4>
             </div>
             <div class="modal-body">
                 <form class="form-horizontal">
                     <div class="box-body">
                         <div class="form-group">
                             <label for="inputHospcode" class="col-sm-3 control-label">รหัสสถานบริการ: </label>
-
                             <div class="col-sm-9">
                                 <input type="text" [(ngModel)]="monit.hospcode" name="hospcode" class="form-control"
                                     id="inputHospcode" placeholder="รหัสสถานบริการ">
@@ -80,17 +84,29 @@
                         </div>
                         <div class="form-group">
                             <label for="inputToken" class="col-sm-3 control-label">Refer Token: </label>
-
                             <div class="col-sm-9">
                                 <input type="password" [(ngModel)]="monit.token" name="token" class="form-control"
                                     id="inputToken" placeholder="Token">
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label for="inputType" class="col-sm-3 control-label">Monitor Type: </label>
+                            <div class="col-sm-9">
+                                <select class="form-control" [(ngModel)]="monit.type" name="type" id="inputType">
+                                    <option value="">==กรุณาเลือก==</option>
+                                    <option value="in">Refer In</option>
+                                    <option value="out">Refer Out</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" (click)="doSave(monit.hospcode,monit.token)">Save</button>
+            <div class="modal-footer bg-grey2">
+                <button type="button" class="btn btn-primary" (click)="doSave(monit.hospcode,monit.token,monit.type)">
+                    <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                    Save
+                </button>
             </div>
         </div>
         <!-- /.modal-content -->

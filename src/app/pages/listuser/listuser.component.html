@@ -1,0 +1,92 @@
+<section class="content">
+    <div class="box box-primary box-solid">
+        <div class="overlay" *ngIf="userLoading">
+            <i class="fa fa-refresh fa-spin"></i>
+        </div>
+        <div class="box-header with-border">
+            <h3 class="box-title">
+                รายชื่อผู้ใช้ในหน่วยงาน
+            </h3>
+            <!-- /.box-tools -->
+            <div class="box-tools">
+                <div class="input-group input-group-sm hidden-xs" style="width: 220px;">
+                    <select [(ngModel)]="search" name="search" id="search" class="form-control"
+                        *ngIf="decoded.status=='3'">
+                        <option value="">ทั้งหมด</option>
+                        <option *ngFor="let l of list | unique:'hospname'" [value]="l?.hospname">
+                            {{ l?.hospname }}
+                        </option>
+                    </select>
+                    <input type="text" [(ngModel)]="search" name="search" class="form-control pull-right"
+                        placeholder="Search" *ngIf="decoded.status=='2'">
+
+                    <div class="input-group-btn" *ngIf="decoded.status=='2'">
+                        <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="box-body">
+                <div class="box-body table-responsive no-padding">
+                    <table class="table table-bordered table-hover table-striped headercenter">
+                        <thead>
+                            <tr>
+                                <th>ลำดับ</th>
+                                <th>สถานบริการ</th>
+                                <th>Username</th>
+                                <th>ชื่อ-สกุล</th>
+                                <th>ตำแหน่ง</th>
+                                <th>สิทธิ์ผู้ใช้งาน</th>
+                                <th>แก้ไข</th>
+                                <th>ลบ</th>
+                                <th>สถานะ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let l of list | filter: {
+                                        hospname: search,
+                                        username: search,
+                                        refer_hospname: search,
+                                        pname: search,
+                                        fname: search,
+                                        lname: search,
+                                        position: search
+                                    }; let i=index;">
+                                <td class="text-center">{{i+1}}</td>
+                                <td>{{l?.hospname}}</td>
+                                <td>{{l?.username}}</td>
+                                <td>{{l?.pname}}{{l?.fname}} {{l?.lname}}</td>
+                                <td>{{l?.position}}</td>
+                                <td class="text-center">{{status(l?.status)}}</td>
+                                <td class="text-center">
+                                    <a class="btn btn-warning btn-xs"
+                                        *ngIf="decoded.status>l?.status || l?.username==decoded.username"
+                                        [routerLink]="['/editprofile',encryp(l.username)]">
+                                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                                <td class="text-center">
+                                    <button class="btn btn-danger btn-xs" *ngIf="decoded.status>l?.status"
+                                        (click)="delUser(l.cid,l.username, l.pname+l.fname+' '+l.lname)">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </button>
+                                </td>
+                                <td class="text-center">
+                                    <label *ngIf="decoded.status>l?.status">
+                                        <input #active type="checkbox" class="flat-red" [checked]="l?.active=='1'"
+                                            (change)="changeStatus(active.checked,l?.username)">
+                                    </label>
+                                    <!-- <span class="badge" [ngClass]="(l?.active=='1')?'bg-green':'bg-red'">
+                                        {{ (l?.active=='1')?'On':'Off' }}
+                                    </span> -->
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

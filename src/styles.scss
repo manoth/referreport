@@ -6,6 +6,16 @@
 @import url(../node_modules/admin-lte/dist/css/AdminLTE.min.css);
 @import url(../node_modules/admin-lte/dist/css/skins/_all-skins.min.css);
 @import url(../node_modules/sweetalert2/dist/sweetalert2.min.css);
+@import url(../node_modules/lightbox2/dist/css/lightbox.min.css);
+@import url(../node_modules/animate.css/animate.min.css);
+
+.bg-blue30 {
+    background-color: #041ca7;
+}
+
+.body-width {
+  width: 100%;
+}
 
 /*Loadnig*/
 .boxLoading {

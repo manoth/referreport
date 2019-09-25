@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MainService } from 'src/app/services/main.service';
 
 @Component({
   selector: 'app-layout',
@@ -7,10 +8,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LayoutComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private main: MainService
+  ) { }
 
   ngOnInit() {
-    document.body.className = 'hold-transition skin-blue layout-top-nav';
+    document.body.className = 'hold-transition skin-green layout-top-nav fixed';
+    this.main.socket.off('connect');
+    this.main.socket.on('connect', () => {
+      this.main.socket.emit('r9refer-username-online', this.main.decodeToken().username);
+    });
   }
 
 }

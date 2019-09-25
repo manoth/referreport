@@ -1,48 +1,33 @@
-// @import url(../../../node_modules/bootstrap/dist/css/bootstrap.min.css);
+@import url(https://fonts.googleapis.com/css?family=Kanit&display=swap);
+@import url(https://fonts.googleapis.com/css?family=Sarabun&display=swap);
 
-.bg-red {
-    background-color: red;
+.bg-blue31 {
+    background-color: #041ca7;
+    font-family: 'Kanit', sans-serif;
 }
 
-.bg-ping {
-    background-color:palevioletred;
-}
-
-.bg-yellow {
-    background-color:yellow;
-}
-
-.bg-grey {
-    background-color:grey;
-    border-color: grey;
-}
-
-.bg-grey1 {
-    background-color:#B5B5B5;
-    border-color: grey;
-}
-
-.bg-grey2 {
-    background-color:#CFCFCF;
-    border-color: grey;
+.bg-black-grey {
+    background-color:#000000;
+    color: #ffffff;
 }
 
 .bg-cyan {
     background-color: cyan;
+    color: #444444;
 }
 
-td {
-  height: 70px;
+.textmiddle th {
+    font-size: 27px;
+    text-align: center;
+    font-weight: bold;
+    vertical-align: middle;
+    border: 4px solid #f4f4f4;
 }
 
-// tbody>tr:hover {
-//     background-color: red;
-//     color: white;
-//     transition: all 3s ease-out; 
-// }
-
-// .box  {
-// background-color: red;
-// transition: all 3s ease-out; 
-// }
+.textmiddle td {
+  height: 88px;
+  font-size: 26px;
+  vertical-align: middle;
+  border: 4px solid #f4f4f4;
+}
 

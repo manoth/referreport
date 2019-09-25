@@ -1,0 +1,300 @@
+<div class="box box-success box-solid">
+    <div class="box-header with-border">
+        <h3 class="box-title">ข้อมูลส่งต่อทั่วไป</h3>
+
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+        </div>
+        <!-- /.box-tools -->
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+        <fieldset>
+            <legend>รายละเอียด</legend>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon">สถานพยาบาลปลายทาง</span>
+                        <input type="text" class="form-control" [value]="tab1?.refer_hospname" disabled>
+                    </div>
+                    <p></p>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon">เลขที่ใบส่งตัว</span>
+                        <input type="text" class="form-control" [value]="tab1?.refer_no" disabled>
+                    </div>
+                    <p></p>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon">ห้องตรวจปลายทาง</span>
+                        <input type="text" class="form-control" [value]="tab1?.spclty_name" disabled>
+                    </div>
+                    <p></p>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon">เป็นผู้ป่วยแผนก</span>
+                        <input type="text" class="form-control" [value]="tab1?.ClinicGroup_name" disabled>
+                    </div>
+                    <p></p>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon">ประเภทผู้ป่วย</span>
+                        <input type="text" class="form-control" [value]="tab1?.typept_name" disabled>
+                    </div>
+                    <p></p>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon">Service Plan</span>
+                        <input type="text" class="form-control" [value]="tab1?.service_name" disabled>
+                    </div>
+                    <p></p>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon">เหตุผลการส่ง</span>
+                        <input type="text" class="form-control" [value]="tab1?.cause_referout_name" disabled>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon">วันที่หมดอายุใบนำส่ง</span>
+                        <input type="text" class="form-control" [value]="tab1?.expire_date| thaidate:'medium'" disabled>
+                    </div>
+                    <p></p>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon">เลขที่ใบส่งตัว HIS</span>
+                        <input type="text" class="form-control" [value]="tab1?.refer_no_his" disabled>
+                    </div>
+                    <p></p>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon">Level of Acuity</span>
+                        <input type="text" class="form-control" [value]="tab1?.level_name" disabled>
+                    </div>
+                    <p></p>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon">สาขา</span>
+                        <input type="text" class="form-control" [value]="tab1?.ClinicSub_name" disabled>
+                    </div>
+                    <p></p>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon">วิธีการนำส่ง</span>
+                        <input type="text" class="form-control" [value]="tab1?.loads_name" disabled>
+                    </div>
+                    <p></p>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon">ทะเบียนรถนำส่ง</span>
+                        <input type="text" class="form-control" [value]="" disabled>
+                    </div>
+                    <p></p>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon">แพทย์ผู้ ส่ง</span>
+                        <input type="text" class="form-control" [value]="tab1?.doctor_name" disabled>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <a data-lightbox="image" href="./assets/img/2019-08-05_14-14-43.png">
+                        <img class="img-responsive" src="./assets/img/2019-08-05_14-14-43.png" />
+                    </a>
+                    <p></p>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon">วันเวลาที่รอรถ Refer ออกเดินรถ</span>
+                        <input type="text" class="form-control"
+                            value="{{tab1?.load_date | thaidate:'medium' }} {{ tab1?.load_time }}:00 น." disabled>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <p></p>
+        <fieldset>
+            <legend>ประสานงาน</legend>
+            <div class="row">
+                <div class="col-sm-3" *ngIf="tab1?.is_coordinate_not=='Y'">
+                    <div class="form-group">
+                        <div class="radio">
+                            <label>
+                                <i class="fa fa-fw fa-check-circle-o text-success"></i>
+                                ไม่จำเป็น
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3" *ngIf="tab1?.is_coordinate_no=='Y'">
+                    <div class="form-group">
+                        <div class="radio">
+                            <label>
+                                <i class="fa fa-fw fa-check-circle-o text-success"></i>
+                                ไม่ประสาน
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3" *ngIf="tab1?.is_coordinate_doctor=='Y'">
+                    <div class="form-group">
+                        <div class="radio">
+                            <label>
+                                <i class="fa fa-fw fa-check-circle-o text-success"></i>
+                                ประสานงานโดยแพทย์
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3" *ngIf="tab1?.is_coordinate_nurse=='Y'">
+                    <div class="form-group">
+                        <div class="radio">
+                            <label>
+                                <i class="fa fa-fw fa-check-circle-o text-success"></i>
+                                ประสานงานโดยพยาบาล
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <p></p>
+        <fieldset>
+            <legend>การประเมินผู้ป่วย</legend>
+            <div class="row">
+                <div class="col-sm-2">
+                    <table class="table table-bordered small">
+                        <tbody>
+                            <tr class="small">
+                                <th>Consciousness</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="text" class="form-control input-sm" [value]="tab1?.conscious" disabled>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-3">
+                    <table class="table table-bordered small">
+                        <tbody>
+                            <tr class="small">
+                                <th>E</th>
+                                <th>V</th>
+                                <th>M</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="text" class="form-control input-sm" [value]="tab1?.e" disabled>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control input-sm" [value]="tab1?.v" disabled>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control input-sm" [value]="tab1?.m" disabled>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-2">
+                    <table class="table table-bordered small">
+                        <tbody>
+                            <tr class="small">
+                                <th>Pupil ขวา</th>
+                                <th>Pupil ซ้าย</th>
+                            </tr>
+                            <tr>
+                                <td> <input type="text" class="form-control input-sm" [value]="tab1?.pupil_right"
+                                        disabled></td>
+                                <td> <input type="text" class="form-control input-sm" [value]="tab1?.pupil_left"
+                                        disabled></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-5">
+                    <table class="table table-bordered small">
+                        <tbody>
+                            <tr class="small">
+                                <th>T(c)</th>
+                                <th>PR(ครั้ง/นาที)</th>
+                                <th>RR(ครั้ง/นาที)</th>
+                                <th>BP(mmHg)</th>
+                                <th>Sp O2(%)</th>
+                            </tr>
+                            <tr>
+                                <td> <input type="text" class="form-control input-sm" [value]="tab1?.t" disabled></td>
+                                <td> <input type="text" class="form-control input-sm" [value]="tab1?.p" disabled></td>
+                                <td> <input type="text" class="form-control input-sm" [value]="tab1?.r" disabled></td>
+                                <td> <input type="text" class="form-control input-sm" [value]="tab1?.bp" disabled></td>
+                                <td> <input type="text" class="form-control input-sm" [value]="tab1?.spo2" disabled>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </fieldset>
+        <p></p>
+        <div class="row">
+            <div class="col-sm-4">
+                <fieldset>
+                    <legend>CC\PI\Physical examination</legend>
+                    <textarea class="form-control" rows="10" disabled>{{tab1?.cc}}</textarea>
+                </fieldset>
+                <p></p>
+                <fieldset>
+                    <legend>Memo ต้นทาง</legend>
+                    <textarea class="form-control" rows="10" disabled>{{tab1?.memo}}</textarea>
+                </fieldset>
+            </div>
+            <div class="col-sm-4">
+                <fieldset>
+                    <legend>Management</legend>
+                    <textarea class="form-control" rows="10" disabled></textarea>
+                </fieldset>
+                <p></p>
+                <fieldset [ngClass]="{'has-error': memoHas}">
+                    <legend>Memo ปลายทาง</legend>
+                    <textarea [(ngModel)]="tab1.memo_destination" name="memo_destination" id="memoDestination"
+                        class="form-control" rows="10" placeholder="ข้อความ" (keyup)="onMemo()" (blur)="onMemo()"
+                        (change)="onMemo()" [disabled]="tab1?.reply_status || path!='referin'"></textarea>
+                </fieldset>
+            </div>
+            <div class="col-sm-4">
+                <fieldset>
+                    <legend>Diagnosis</legend>
+                    <textarea class="form-control" rows="3" disabled>{{tab1?.memodiag}}</textarea>
+                </fieldset>
+                <p></p>
+                <fieldset>
+                    <legend>การวินิจฉัย (ICD-10)</legend>
+                    <div class="box-body table-responsive no-padding">
+                        <table class="table table-hover table-condensed table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th>ICD10</th>
+                                    <th>ประเภท</th>
+                                    <th>Diag Description</th>
+                                </tr>
+                                <tr>
+                                    <td>{{tab1?.icd10}}</td>
+                                    <td>{{tab1?.diagtype_id}}</td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+        <div class="row" style="padding-top: 15px" *ngIf="!tab1?.reply_status && path=='referin'">
+            <div class="col-sm-4">
+                <button type="button" class="btn btn-block btn-danger" (click)="doCancel()">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                    ปฏิเสธ
+                </button>
+            </div>
+            <div class="col-sm-4">
+                <button type="button" class="btn btn-block btn-success" (click)="doSave()">
+                    <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                    ลงรับ
+                </button>
+            </div>
+            <div class="col-sm-4">
+                <button type="button" class="btn btn-block btn-info" (click)="doResend()">
+                    <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                    ส่งต่อ
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

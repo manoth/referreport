@@ -1,0 +1,79 @@
+<section class="content">
+    <div class="box box-primary box-solid">
+        <div class="overlay" *ngIf="loading">
+            <i class="fa fa-refresh fa-spin"></i>
+        </div>
+        <div class="box-header with-border">
+            <h3 class="box-title">
+                <!-- <i class="fa" [ngClass]="header?.icon"></i> -->
+                รายการ {{ header?.name }}
+            </h3>
+
+            <div class="box-tools">
+                <div class="input-group input-group-sm hidden-xs" style="width: 150px;">
+                    <input type="text" [(ngModel)]="search" name="search" class="form-control pull-right"
+                        placeholder="Search">
+
+                    <div class="input-group-btn">
+                        <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                    </div>
+                </div>
+            </div>
+            <!-- /.box-tools -->
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="box-body">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" style="margin-top: 7px;">
+                        <i class="fa fa-calendar" aria-hidden="true"></i>
+                        เลือกช่วงวันที่:
+                    </label>
+                    <div class="col-sm-5">
+                        <my-date-range-picker name="mydaterange" [options]="myDateRangePickerOptions"
+                            [(ngModel)]="model" (dateRangeChanged)="onDateRangeChanged($event)"
+                            placeholder="กรุณาเลือกช่วงวันที่" required>
+                        </my-date-range-picker>
+                    </div>
+                    <label class="col-sm-5 control-label pull-right" style="margin-top: 7px;">
+                        <i class="fa fa-exchange" aria-hidden="true"></i>
+                        จากวันที่ {{ beginDate | thaidate:'medium' }} ถึง {{ endDate | thaidate:'medium' }}
+                    </label>
+                </div>
+            </div>
+            <app-refer-list *ngIf="path!='referin'" [lists]="lists" [path]="path" [search]="search"
+                (tokenNo)="toDetail($event)"></app-refer-list>
+            <div class="nav-tabs-custom" *ngIf="path=='referin'">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#tab1" (click)="accepted(false)" data-toggle="tab" aria-expanded="true">
+                            <i class="fa fa-refresh" aria-hidden="true"></i>
+                            รอลงรับ
+                            <sup>
+                                <span style="font-size: 8px;" class="badge bg-red" *ngIf="countReferIn>0">
+                                    {{ (countReferIn>99)?'99+':countReferIn }}
+                                </span>
+                            </sup>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#tab2" (click)="accepted(true)" data-toggle="tab" aria-expanded="true">
+                            <i class="fa fa-check-square-o" aria-hidden="true"></i>
+                            ลงรับแล้ว
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab1">
+                        <app-refer-list [lists]="lists" [path]="path" [search]="search" (tokenNo)="toDetail($event)">
+                        </app-refer-list>
+                    </div>
+                    <div class="tab-pane" id="tab2">
+                        <app-refer-list [lists]="lists" [path]="path" [search]="search" (tokenNo)="toDetail($event)">
+                        </app-refer-list>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

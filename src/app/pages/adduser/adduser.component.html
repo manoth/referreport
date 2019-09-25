@@ -1,0 +1,232 @@
+<section class="content">
+    <div class="box box-primary box-solid">
+        <div class="box-header with-border">
+            <h3 class="box-title" *ngIf="!editProfile">
+                เพิ่มบัญชีผู้ใช้ ภายในหน่วยงานของท่าน
+            </h3>
+            <h3 class="box-title" *ngIf="editProfile">
+                บัญชีผู้ใช้ {{pname}}{{user.fname}} {{user.lname}}
+            </h3>
+            <!-- /.box-tools -->
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <form enctype="multipart/form-data" class="form-horizontal" (ngSubmit)="onSubmit()">
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <h4 class="text-center">ข้อมูลบัญชี</h4>
+                            </div>
+                            <div class="form-group" [ngClass]="{'has-error': hasUser}">
+                                <label for="inputUsername" class="col-sm-4 control-label">Username</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" [(ngModel)]="user.username" name="username"
+                                        id="inputUsername" placeholder="Username" (change)="onUsername(user.username)"
+                                        (blur)="onUsername(user.username)" (keyup)="onUsername(user.username)"
+                                        [disabled]="editProfile" required>
+                                    <span class="help-block" *ngIf="hasUser">{{txtErrUser}}</span>
+                                </div>
+                            </div>
+                            <div class="form-group" [ngClass]="{'has-error': hasPassword}">
+                                <label for="inputPassword" class="col-sm-4 control-label">Password</label>
+                                <div class="col-sm-8">
+                                    <input type="password" class="form-control" [(ngModel)]="password" name="password"
+                                        id="inputPassword" placeholder="Password" (change)="onPassword(password)"
+                                        (blur)="onPassword(password)" (keyup)="onPassword(password)" required>
+                                    <span class="help-block" *ngIf="hasPassword">{{txtErrPassword}}</span>
+                                </div>
+                            </div>
+                            <div class="form-group" *ngIf="password" [ngClass]="{'has-error': hasRePassword}">
+                                <label for="inputConfirmPassword" class="col-sm-4 control-label">Confirm
+                                    Password</label>
+                                <div class="col-sm-8">
+                                    <input type="password" class="form-control" [(ngModel)]="repassword"
+                                        name="repassword" id="inputConfirmPassword" placeholder="Confirm Password"
+                                        (change)="onRePassword(repassword)" (blur)="onRePassword(repassword)"
+                                        (keyup)="onRePassword(repassword)" required>
+                                    <span class="help-block"
+                                        *ngIf="hasRePassword">{{txtNull(repassword,'รหัสผ่านไม่ตรงกัน!')}}</span>
+                                </div>
+                            </div>
+                            <div class="form-group" [ngClass]="{'has-error': !hasImage}">
+                                <label for="InputFile" class="col-sm-4 control-label">รูปภาพ(ถ้ามี)</label>
+                                <div class="col-sm-8">
+                                    <input #file type="file" name="file" accept='image/*'
+                                        (change)="fileProgress(file.files)" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="InputFile" class="col-sm-3 control-label"></label>
+                                <div class="col-sm-9 xbox" style="padding-top: 20px;">
+                                    <a href="javascript:void(0)" (click)="file.click()" class="editable-click">
+                                        <img class="profile-user-img img-responsive img-circle" [src]="imgURL"
+                                            alt="User profile picture" *ngIf="imgURL"
+                                            style="width: 180px; height: 180px;" />
+                                        <p>คลิกเพื่อเลือกรูปภาพ</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <h4 class="text-center">ข้อมูลส่วนตัว</h4>
+                            </div>
+                            <div class="form-group" [ngClass]="{'has-error': hasCid}">
+                                <label for="inputCid" class="col-sm-4 control-label">รหัสประชาชน</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" [(ngModel)]="user.cid" name="cid"
+                                        id="inputCid" placeholder="เลขประจำตัวประชาชน" (change)="onCid(user.cid)"
+                                        (blur)="onCid(user.cid)" (keyup)="onCid(user.cid)" [disabled]="editProfile"
+                                        required>
+                                    <span class="help-block" *ngIf="hasCid">{{txtErrCid}}</span>
+                                </div>
+                            </div>
+                            <div class="form-group" *ngIf="main.in_array(decode.status, ['0', '3'])">
+                                <label for="inputHospcode" class="col-sm-4 control-label">สถานบริการ</label>
+                                <div class="col-sm-8">
+                                    <select [(ngModel)]="user.hospcode" name="hospcode" id="inputHospcode"
+                                        class="form-control select2" style="width: 100%;">
+                                        <option value="" disabled="disabled">==กรุณาเลือก==</option>
+                                        <option *ngFor="let h of hospcode" [value]="h.hoscode">
+                                            [{{ h.hoscode }}] {{ h.hosname }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group" [ngClass]="{'has-error': hasPname}">
+                                <label for="inputPname" class="col-sm-4 control-label">คำนำหน้าชื่อ</label>
+                                <div class="col-sm-8">
+                                    <select [(ngModel)]="user.pname" name="pname" id="inputPname"
+                                        class="form-control select2" style="width: 100%;">
+                                        <option value="" disabled="disabled">==กรุณาเลือก==</option>
+                                        <option *ngFor="let p of prename" [value]="p.id_prename">
+                                            {{ p.detail }}
+                                        </option>
+                                    </select>
+                                    <span class="help-block" *ngIf="hasPname">{{txtNull(user.pname)}}</span>
+                                </div>
+                            </div>
+                            <div class="form-group" [ngClass]="{'has-error': hasFname}">
+                                <label for="inputFname" class="col-sm-4 control-label">ชื่อจริง</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" [(ngModel)]="user.fname" name="fname"
+                                        id="inputFname" placeholder="ชื่อจริง" (change)="onFname(user.fname)"
+                                        (blur)="onFname(user.fname)" (keyup)="onFname(user.fname)" required>
+                                    <span class="help-block" *ngIf="hasFname">{{txtNull(user.fname)}}</span>
+                                </div>
+                            </div>
+                            <div class="form-group" [ngClass]="{'has-error': hasLname}">
+                                <label for="inputLname" class="col-sm-4 control-label">นามสกุล</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" [(ngModel)]="user.lname" name="lname"
+                                        id="inputLname" placeholder="นามสกุล" (change)="onLname(user.lname)"
+                                        (blur)="onLname(user.lname)" (keyup)="onLname(user.lname)" required>
+                                    <span class="help-block" *ngIf="hasLname">{{txtNull(user.lname)}}</span>
+                                </div>
+                            </div>
+                            <div class="form-group" [ngClass]="{'has-error': hasBirth}">
+                                <label for="inputBirth" class="col-sm-4 control-label">วัน เดือน ปีเกิด</label>
+                                <div class="col-sm-8">
+                                    <my-date-picker name="dateFinish" [options]="myDatePickerOptions"
+                                        [(ngModel)]="birth" (dateChanged)="onBirth($event)"
+                                        [placeholder]="'dd mmm yyyy'" [locale]="'th'" required>
+                                    </my-date-picker>
+                                    <span class="help-block" *ngIf="hasBirth">{{txtNull(birth)}}</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputSex" class="col-sm-4 control-label">เพศ</label>
+                                <div class="col-sm-8 text-center" style="padding-top: 8px;">
+                                    <label class="col-sm-6">
+                                        <input type="radio" [(ngModel)]="user.sex" name="sex" value="ชาย"
+                                            class="minimal-red" checked>
+                                        ชาย
+                                    </label>
+                                    <label class="col-sm-6">
+                                        <input type="radio" [(ngModel)]="user.sex" name="sex" value="หญิง"
+                                            class="minimal-red">
+                                        หญิง
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group" [ngClass]="{'has-error': hasPosition}">
+                                <label for="inputPosition" class="col-sm-4 control-label">ตำแหน่ง</label>
+                                <div class="col-sm-8">
+                                    <select [(ngModel)]="user.position" name="position" id="inputPosition"
+                                        class="form-control select2" style="width: 100%;">
+                                        <option value="" disabled="disabled">==กรุณาเลือก==</option>
+                                        <option *ngFor="let p of position" [value]="p.id_position">
+                                            {{ p.position }}
+                                        </option>
+                                    </select>
+                                    <span class="help-block" *ngIf="hasPosition">{{txtNull(user.position)}}</span>
+                                </div>
+                            </div>
+                            <div class="form-group" [ngClass]="{'has-error': hasEmail}">
+                                <label for="inputEmail" class="col-sm-4 control-label">Email</label>
+                                <div class="col-sm-8">
+                                    <input type="email" class="form-control" [(ngModel)]="user.email" name="email"
+                                        id="inputEmail" placeholder="Email" (change)="onEmail(user.email)"
+                                        (blur)="onEmail(user.email)" (keyup)="onEmail(user.email)" required>
+                                    <span class="help-block"
+                                        *ngIf="hasEmail">{{txtNull(user.email,'รูปแบบอักขระ Email ไม่ถูกต้อง!')}}</span>
+                                </div>
+                            </div>
+                            <div class="form-group" [ngClass]="{'has-error': hasTel}">
+                                <label for="inputTel" class="col-sm-4 control-label">เบอร์โทรศัพท์มือถือ</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" [(ngModel)]="user.tel" name="tel"
+                                        id="inputTel" placeholder="เบอร์โทรศัพท์มือถือ" (change)="onTel(user.tel)"
+                                        (blur)="onTel(user.tel)" (keyup)="onTel(user.tel)" required>
+                                    <span class="help-block"
+                                        *ngIf="hasTel">{{txtNull(user.tel,'เบอร์โทรศัพท์มือถือของคุณไม่ถูกต้อง')}}</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputLineToken" class="col-sm-4 control-label">Line Token
+                                    ส่วนตัว(ถ้ามี)</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" [(ngModel)]="user.linetoken"
+                                        name="linetoken" id="inputLineToken" placeholder="Line Token ส่วนตัว">
+                                </div>
+                            </div>
+                            <div class="form-group" *ngIf="decode.status>user.status">
+                                <label for="inputActive" class="col-sm-4 control-label">สถานะการใข้งาน</label>
+                                <div class="col-sm-8">
+                                    <select [(ngModel)]="user.active" name="active" id="inputActive"
+                                        class="form-control" style="width: 100%;">
+                                        <option value="0">Off</option>
+                                        <option value="1">On</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group" *ngIf="decode.status=='3'">
+                                <label for="inputStatus" class="col-sm-4 control-label">สิทธิ์ผู้ใช้งาน</label>
+                                <div class="col-sm-8">
+                                    <select [(ngModel)]="user.status" name="status" id="inputStatus"
+                                        class="form-control" style="width: 100%;">
+                                        <option value="0">Register</option>
+                                        <option value="1">User</option>
+                                        <option value="2">Admin</option>
+                                        <option value="3">Developer</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-footer">
+                    <button type="reset" id="reset" class="btn btn-default" (click)="resetButton()">
+                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                        ยกเลิก
+                    </button>
+                    <button type="submit" class="btn btn-info pull-right">
+                        <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                        บันทึก
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>

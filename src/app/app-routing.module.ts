@@ -1,17 +1,18 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuardService } from './services/auth-guard.service';
+import { AuthGuardRegisterService } from './services/auth-guard-register.service';
 
 import { LoginComponent } from './login/login.component';
 import { MonitorComponent } from './monitor/monitor.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { LayoutComponent } from './pages/layout/layout.component';
-import { ReferInComponent } from './pages/refer-in/refer-in.component';
-import { ReferOutComponent } from './pages/refer-out/refer-out.component';
-import { ReferBackComponent } from './pages/refer-back/refer-back.component';
-import { ReferInDetailComponent } from './pages/refer-in-detail/refer-in-detail.component';
-import { ReferOutDetailComponent } from './pages/refer-out-detail/refer-out-detail.component';
-import { ReferBackDetailComponent } from './pages/refer-back-detail/refer-back-detail.component';
+import { ReferComponent } from './pages/refer/refer.component';
+import { ReferDetailComponent } from './pages/refer-detail/refer-detail.component';
+import { AdduserComponent } from './pages/adduser/adduser.component';
+import { ListuserComponent } from './pages/listuser/listuser.component';
+import { ChatroomComponent } from './pages/chatroom/chatroom.component';
+import { DicomViewerLibComponent } from './pages/dicom-viewer-lib/dicom-viewer-lib.component';
 
 
 const routes: Routes = [
@@ -20,15 +21,26 @@ const routes: Routes = [
   { path: 'monitor', component: MonitorComponent },
   {
     path: '', component: LayoutComponent,
+    canActivate: [AuthGuardRegisterService],
+    children: [
+      { path: 'adduser', component: AdduserComponent },
+      { path: 'editprofile/:username', component: AdduserComponent }
+    ]
+  },
+  {
+    path: '', component: LayoutComponent,
     canActivate: [AuthGuardService],
     children: [
-      { path: '', redirectTo: 'referin', pathMatch: 'full' },
-      { path: 'referin', component: ReferInComponent },
-      { path: 'referin/:referId', component: ReferInDetailComponent },
-      { path: 'referout', component: ReferOutComponent },
-      { path: 'referout/:referId', component: ReferOutDetailComponent },
-      { path: 'referback', component: ReferBackComponent },
-      { path: 'referback/:referId', component: ReferBackDetailComponent }
+      { path: 'referin', component: ReferComponent },
+      { path: 'referin/:referId', component: ReferDetailComponent },
+      { path: 'referout', component: ReferComponent },
+      { path: 'referout/:referId', component: ReferDetailComponent },
+      { path: 'referback', component: ReferComponent },
+      { path: 'referback/:referId', component: ReferDetailComponent },
+      { path: 'listuser', component: ListuserComponent },
+      { path: 'editprofile', component: AdduserComponent },
+      { path: 'chatroom', component: ChatroomComponent },
+      { path: 'dicomviewer', component: DicomViewerLibComponent }
     ]
   },
   { path: '**', component: PageNotFoundComponent, pathMatch: 'full' }

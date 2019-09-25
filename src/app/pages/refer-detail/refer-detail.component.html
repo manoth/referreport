@@ -1,0 +1,39 @@
+<section class="content">
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+            <li [ngClass]="{'active': !tabComment}">
+                <a href="#detail" data-toggle="tab" aria-expanded="true">
+                    <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                    รายละเอียด
+                </a>
+            </li>
+            <li [ngClass]="{'active': tabComment}">
+                <a (click)="onTab($event); countAlert=0;" href="#comment" data-toggle="tab" aria-expanded="true">
+                    <i class="fa fa-comments" aria-hidden="true"></i>
+                    Discussion
+                    <sup>
+                        <span style="font-size: 8px;" class="badge bg-red" *ngIf="countAlert>0">
+                            {{ (countAlert>99)?'99+':countAlert }}
+                        </span>
+                    </sup>
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane" id="detail" [ngClass]="{'active': !tabComment}">
+                <div class="boxLoading" *ngIf="!loading"></div>
+                <app-tab0 *ngIf="loading" [detail]="detail"></app-tab0>
+                <app-tab1 *ngIf="loading" [tab1]="detail" [path]="path" (cancel)="doCancel($event)"
+                    (save)="doSave($event)" (resend)="doResend($event)">
+                </app-tab1>
+                <app-tab2 *ngIf="loading" [tab2]="treatment"></app-tab2>
+                <app-tab3 *ngIf="loading" [tab3]="drug"></app-tab3>
+                <app-tab4 *ngIf="loading" [tab4]="lab"></app-tab4>
+            </div>
+            <div class="tab-pane" id="comment" [ngClass]="{'active': tabComment}">
+                <app-tab5 *ngIf="loading" [referNo]="detail?.refer_no" [toBottom]="toBottom" (overRead)="countAlert=0">
+                </app-tab5>
+            </div>
+        </div>
+    </div>
+</section>

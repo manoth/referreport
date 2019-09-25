@@ -33,13 +33,15 @@
             "scripts": [
               "node_modules/admin-lte/bower_components/jquery/dist/jquery.min.js",
               "node_modules/admin-lte/bower_components/bootstrap/dist/js/bootstrap.min.js",
-              "node_modules/admin-lte/bower_components/select2/dist/js/select2.full.min.js",
+              "node_modules/bootstrap-notify/bootstrap-notify.js",
+              "node_modules/admin-lte/bower_components/select2/dist/js/select2.min.js",
               "node_modules/admin-lte/bower_components/jquery-slimscroll/jquery.slimscroll.min.js",
               "node_modules/admin-lte/bower_components/fastclick/lib/fastclick.js",
               "node_modules/admin-lte/dist/js/adminlte.min.js",
               "node_modules/admin-lte/dist/js/demo.js",
               "node_modules/sweetalert2/dist/sweetalert2.min.js",
-              "node_modules/socket.io-client/dist/socket.io.js"
+              "node_modules/socket.io-client/dist/socket.io.js",
+              "node_modules/lightbox2/dist/js/lightbox.min.js"
             ]
           },
           "configurations": {

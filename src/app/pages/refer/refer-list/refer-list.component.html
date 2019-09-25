@@ -1,0 +1,63 @@
+<div class="box-body table-responsive no-padding">
+    <table class="table table-bordered table-hover table-striped headercenter">
+        <thead>
+            <tr>
+                <th>ลำดับ</th>
+                <th>เลขที่ส่งต่อ</th>
+                <th *ngIf="path=='referin'">จาก</th>
+                <th *ngIf="path!='referin'">ถึง</th>
+                <th>ชื่อ-สกุล</th>
+                <th>วันที่ส่งต่อ</th>
+                <th>เวลาส่งต่อ</th>
+                <th>สถานะ</th>
+                <th>การเดินทาง</th>
+                <th>สถานะการส่ง</th>
+                <th>Discussion</th>
+                <th>รายละเอียด</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let l of lists | filter: {
+                                        refer_no: search,
+                                        from_hospname: search,
+                                        refer_hospname: search,
+                                        pname: search,
+                                        fname: search,
+                                        lname: search,
+                                        level_name: search,
+                                        loads_name: search
+                                    }; let i=index;">
+                <td class="text-center">{{i+1}}</td>
+                <td>{{l.refer_no}}</td>
+                <td *ngIf="path=='referin'">{{replaceHospname(l.from_hospname)}}</td>
+                <td *ngIf="path!='referin'">{{replaceHospname(l.refer_hospname)}}</td>
+                <td>{{l.pname}}{{l.fname}} {{l.lname}}</td>
+                <td>{{l.refer_date | thaidate:'short'}}</td>
+                <td>{{l.load_time || l.refer_time}}</td>
+                <td>{{l.level_name}}</td>
+                <td>{{l.loads_name}}</td>
+                <td class="text-center">
+                    <span class="badge bg-green" *ngIf="l.reply_status=='01'">ลงรับแล้ว</span>
+                    <span class="badge bg-yellow" *ngIf="!l.reply_status">รอลงรับ</span>
+                </td>
+                <td class="text-center">
+                    <a [routerLink]="['/',path,l.token_no.replace('==', '').replace('=', '')]"
+                        [queryParams]="{tab:'comment'}" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-bell-o"></i>
+                        <sup>
+                            <span style="font-size: 8px;" class="badge bg-red" *ngIf="l.nonread>0">
+                                {{ (l.nonread>99)?'99+':l.nonread }}
+                            </span>
+                        </sup>
+                    </a>
+                </td>
+                <td class="text-center">
+                    <a [routerLink]="['/',path,l.token_no.replace('==', '').replace('=', '')]"
+                        [queryParams]="{tab:'detail'}" type="button" class="btn btn-info btn-sm">
+                        <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

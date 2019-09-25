@@ -1,0 +1,150 @@
+<section class="content">
+    <div class="box box-default">
+        <!-- <div class="box-header with-border">
+            <h3 class="box-title">
+                ห้องแชทรวมทั้งหมด
+            </h3>
+        </div> -->
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="row">
+                <div class="col-sm-10 col-md-8">
+                    <div class="box box-primary box-solid">
+                        <div class="overlay" *ngIf="liading">
+                            <i class="fa fa-refresh fa-spin"></i>
+                        </div>
+                        <div class="box-header with-border">
+                            <h3 class="box-title">
+                                <i class="fa fa-commenting" aria-hidden="true"></i>
+                                ห้องแชทรวม
+                                <span *ngIf="room=='r9refer-chatroom-all'">ทั้งหมด</span>
+                                <span *ngIf="room!='r9refer-chatroom-all'">จังหวัด</span>
+                            </h3>
+                            <div class="box-tools">
+                                <!-- <select (change)="getMessage()" [(ngModel)]="room" name="room" id="room"
+                                    class="form-control">
+                                    <option [value]="'r9refer-chatroom-all'">ทั้งหมด</option>
+                                    <option [value]="'r9refer-chatroom-'+decoded.provcode">จังหวัด</option>
+                                </select> -->
+                            </div>
+                        </div>
+                        <div class="box-body direct-chat direct-chat-info" style="font-size: 18px;">
+                            <!-- Conversations are loaded here -->
+                            <div #scrollMe [scrollTop]="scrollMe.scrollHeight" class="direct-chat-messages"
+                                style="overflow: scroll; height:508px;">
+                                <!-- Message. Default to the left -->
+                                <div style="overflow:auto" class="direct-chat-msg"
+                                    *ngFor="let m of messenger?.reverse(); let last=last;"
+                                    [class.right]="decoded?.username==m?.username">
+                                    <div class="direct-chat-info clearfix">
+                                        <span class="direct-chat-name"
+                                            [ngClass]="(decoded?.username==m?.username) ? 'pull-right' : 'pull-left'">
+                                            {{ m.fname }} {{ m.lname }}
+                                        </span>
+                                        <span class="direct-chat-timestamp"
+                                            [ngClass]="(decoded?.username==m?.username) ? 'pull-left' : 'pull-right'">
+                                            {{ m.d_update | date:'MMM d, y, HH:mm:ss':'utc' }}
+                                            <span *ngIf="decoded?.username==m?.username && m?.read>0">
+                                                &nbsp;&nbsp;อ่านแล้ว {{ (m?.read>99)?'99+':m?.read }} คน
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <!-- /.direct-chat-info -->
+                                    <img *ngIf="!m?.image" class="direct-chat-img"
+                                        [ngClass]="(main.in_array(m?.username,arrUser))?'img-bordered-sm-online':'img-bordered-sm-offline'"
+                                        src="./assets/img/profile-avatar.jpg" alt="message user image">
+                                    <img *ngIf="m?.image" class="direct-chat-img"
+                                        [ngClass]="(main.in_array(m?.username,arrUser))?'img-bordered-sm-online':'img-bordered-sm-offline'"
+                                        [src]="m.image" alt="message user image" />
+                                    <!-- /.direct-chat-img -->
+                                    <div class="direct-chat-text">
+                                        <span *ngIf="m?.type=='message'" [innerHtml]="m.comment | nl2br "></span>
+                                        <a *ngIf="m?.type=='image'" data-lightbox="comment"
+                                            href="{{m?.comment.split('|')[0]}}">
+                                            <img [src]="m?.comment.split('|')[1]" width="20%" />
+                                        </a>
+                                        <a *ngIf="m?.type=='file'" href="{{m?.comment}}"
+                                            [ngClass]="{'url-color': decoded?.username==m?.username}">
+                                            <i class="fa fa-paperclip" aria-hidden="true"></i>
+                                            {{ (m?.comment.split('/')[m?.comment.split('/').length-1]).substring(14) }}
+                                        </a>
+                                    </div>
+                                    <!-- /.direct-chat-text -->
+                                </div>
+                                <!-- /.direct-chat-msg -->
+                            </div>
+                            <!--/.direct-chat-messages-->
+                        </div>
+                        <div class="box-footer">
+                            <form enctype="multipart/form-data" (submit)="onSend()">
+                                <div class="input-group">
+                                    <!-- <input (keyup)="scrollToBottom()" id="message" type="text" [(ngModel)]="message"
+                                        name="message" placeholder="Type Message ..." class="form-control"> -->
+                                    <textarea (keyup)="scrollMe.scrollTop=scrollMe.scrollHeight"
+                                        (keydown)="main.onOver()" (keydown.enter)="onSend()" class="form-control"
+                                        id="message" [(ngModel)]="message" name="message" rows="1"
+                                        placeholder="Type Message ..."></textarea>
+                                    <span class="input-group-btn">
+                                        <input #image type="file" name="image" accept='image/*'
+                                            (change)="onSendImage(image.files)" style="display: none" />
+                                        <button type="button" (click)="image.click()" class="btn btn-default btn-flat">
+                                            <i class="fa fa-camera" aria-hidden="true"></i>
+                                        </button>
+                                    </span>
+                                    <span class="input-group-btn">
+                                        <input #file type="file" name="file" accept='.dcm,.dicom'
+                                            (change)="onSendFile(file.files)" style="display: none" />
+                                        <button type="button" (click)="file.click()" class="btn btn-default btn-flat">
+                                            <i class="fa fa-paperclip" aria-hidden="true"></i>
+                                        </button>
+                                    </span>
+                                    <span class="input-group-btn">
+                                        <button type="submit" class="btn btn-warning btn-flat">Send</button>
+                                    </span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-2 col-md-4 hidden-xs">
+                    <div class="box box-danger box-solid">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">
+                                <i class="fa fa-users" aria-hidden="true"></i>
+                                <span class="hidden-sm"> สมาชิก</span>
+                            </h3>
+                            <div class="box-tools">
+                                <span class="pull-right badge bg-yellow">
+                                    Online {{ (userOnline)?userOnline.length:0 }} คน
+                                </span>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <div style="overflow: scroll; height:565px;">
+                                <ul class="products-list product-list-in-box">
+                                    <li class="item" *ngFor="let user of userOnline">
+                                        <div class="product-img">
+                                            <img *ngIf="user?.image" class="img-circle img-bordered-sm-online"
+                                                [src]="user.image" alt="Product Image">
+                                            <img *ngIf="!user?.image" class="img-circle img-bordered-sm-online"
+                                                src="./assets/img/profile-avatar.jpg" alt="Product Image">
+                                        </div>
+                                        <div class="product-info hidden-sm">
+                                            <a href="javascript:void(0)" class="product-title">
+                                                {{ user.fname }} {{ user.lname }}
+                                                <span class="label label-success pull-right">Online</span>
+                                            </a>
+                                            <span class="product-description">
+                                                {{ user.hospname }}
+                                            </span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,8 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MainService } from '../services/main.service';
 
-import * as io from 'socket.io-client';
-import { async } from '@angular/core/testing';
+import Swal from 'sweetalert2';
 
 declare const $: any;
 
@@ -13,31 +12,38 @@ declare const $: any;
 })
 export class MonitorComponent implements OnInit {
 
-  private socket: SocketIOClient.Socket;
   today: any = Date.now();
+  referTitle: string;
+  chechTypeRefer: boolean = true;
 
   monit = new Monit();
   hospital: any;
   referIn: any;
 
-  hospcode: string = 'refer-hospcode';
-  token: string = 'refer-token';
-
   constructor(
     @Inject('apiUrl') private apiUrl: string,
+    @Inject('REFER_HOSPCODE') private hospcode: string,
+    @Inject('REFER_TOKEN') private token: string,
+    @Inject('REFER_TYPE') private referType: string,
     private main: MainService
   ) {
-    this.socket = io(this.apiUrl);
     setInterval(() => { this.today = Date.now() }, 1000);
   }
 
   ngOnInit() {
     this.monit.hospcode = localStorage.getItem(this.hospcode);
     this.monit.token = localStorage.getItem(this.token);
-    this.doSave(this.monit.hospcode, this.monit.token);
-    this.socket.on(this.monit.token, async (refer_no) => {
+    this.monit.type = localStorage.getItem(this.referType);
+    this.doSave(this.monit.hospcode, this.monit.token, this.monit.type);
+    this.main.socket.off(this.monit.token);
+    this.main.socket.on(this.monit.token, async (refer_no) => {
       await this.referin();
       await this.switchColor(refer_no);
+    });
+    this.main.socket.off('refer-monitor-reload');
+    this.main.socket.on('refer-monitor-reload', (reload) => {
+      console.log(reload);
+      window.location.reload(true);
     });
   }
 
@@ -47,31 +53,49 @@ export class MonitorComponent implements OnInit {
         $('tr#bg' + refer_no).addClass('new-case');
         if ($('tr#bg' + refer_no).hasClass('bg-cyan')) {
           $('tr#bg' + refer_no).removeClass('bg-cyan');
+          $('tr#bg' + refer_no).addClass('bg-black');
         } else {
+          $('tr#bg' + refer_no).removeClass('bg-black');
           $('tr#bg' + refer_no).addClass('bg-cyan');
         }
       }, 1000);
       setTimeout(() => {
         $('tr#bg' + refer_no).removeClass('bg-cyan');
+        $('tr#bg' + refer_no).addClass('bg-black');
         $('tr#bg' + refer_no).removeClass('new-case');
         clearInterval(interval);
       }, 1000 * 60 * 2);
     }
   }
 
-  doSave(hospcode, token) {
+  doSave(hospcode, token, type) {
     $('#modal-default').modal({ backdrop: 'static', keyboard: false });
-    if (hospcode && token) {
-      this.main.post('monitor', { hospcode, token }).then((row: any) => {
+    if (hospcode && token && type) {
+      this.referTitle = (type == 'in') ? 'Refer In' : 'Refer Out';
+      this.chechTypeRefer = (type == 'in') ? true : false;
+      this.main.post('monitor', { hospcode, token, type }).then((row: any) => {
         localStorage.setItem(this.hospcode, this.monit.hospcode);
         localStorage.setItem(this.token, this.monit.token);
+        localStorage.setItem(this.referType, this.monit.type);
         this.hospital = row.data[0];
         $('#modal-default').modal('hide');
         this.referin();
       }).catch((err: any) => {
-        console.log(err);
+        Swal.fire({
+          type: 'error',
+          title: 'รหัสสถานบริการ หรือ Refer Token ไม่ถูกต้อง!',
+          text: err,
+          allowOutsideClick: false
+        });
         localStorage.removeItem(this.hospcode);
         localStorage.removeItem(this.token);
+        localStorage.removeItem(this.referType);
+      });
+    } else {
+      Swal.fire({
+        type: 'warning',
+        text: 'กรุณากรอกข้อมูลให้ครบทุกช่อง!',
+        allowOutsideClick: false
       });
     }
   }
@@ -79,8 +103,8 @@ export class MonitorComponent implements OnInit {
   async referin() {
     const hospcode = localStorage.getItem(this.hospcode);
     const token = localStorage.getItem(this.token);
-    const rows: any = await this.main.post('monitor/referin', { hospcode, token });
-    console.log(rows);
+    const type = localStorage.getItem(this.referType);
+    const rows: any = await this.main.post('monitor/referin', { hospcode, token, type });
     if (rows.ok) {
       this.referIn = rows.data;
     }
@@ -118,13 +142,10 @@ export class MonitorComponent implements OnInit {
     }
   }
 
-  className(refer_no: string) {
-    return 'bg-' + refer_no;
-  }
-
 }
 
 export class Monit {
   hospcode: string;
   token: string;
+  type: string;
 }

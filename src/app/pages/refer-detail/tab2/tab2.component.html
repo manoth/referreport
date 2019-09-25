@@ -1,0 +1,30 @@
+<div class="box box-success box-solid">
+    <div class="box-header with-border">
+        <h3 class="box-title">Treatment</h3>
+
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+        </div>
+        <!-- /.box-tools -->
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+        <div class="box-body table-responsive no-padding">
+            <table class="table table-hover">
+                <tbody>
+                    <tr>
+                        <th>ID</th>
+                        <th>รายการรักษา</th>
+                        <th></th>
+
+                    </tr>
+                    <tr *ngFor="let item of tab2;let i=index">
+                        <td>{{i+1}}</td>
+                        <td>{{item.stockname}}</td>
+                        <td>{{item.makedate| thaidate:'medium'}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
