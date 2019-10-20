@@ -1,5 +1,5 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 // val.year //{{visibleMonth
 import { IMyDrpOptions } from 'mydaterangepicker';
 import { MainService } from 'src/app/services/main.service';
@@ -10,6 +10,8 @@ import { MainService } from 'src/app/services/main.service';
   styleUrls: ['./refer.component.scss']
 })
 export class ReferComponent implements OnInit {
+
+  tabId: string;
 
   myDateRangePickerOptions: IMyDrpOptions;
   model: any;
@@ -26,9 +28,6 @@ export class ReferComponent implements OnInit {
   countReferIn: number;
 
   constructor(
-    @Inject('apiUrl') private apiUrl: string,
-    @Inject('REFER_HOSPCODE') private hospcode: string,
-    private router: Router,
     private route: ActivatedRoute,
     private main: MainService
   ) {
@@ -60,7 +59,12 @@ export class ReferComponent implements OnInit {
     this.beginDate = beginDate.year + '/' + beginDate.month + '/' + beginDate.day;
     this.endDate = endDate.year + '/' + endDate.month + '/' + endDate.day;
     this.path = this.route.snapshot.url[0].path;
-    this.getReferinList(this.beginDate, this.endDate, this.path, this.accept);
+    this.route.queryParams.subscribe((queryParams) => {
+      this.loading = true;
+      this.tabId = queryParams['tab'];
+      this.accept = (this.tabId == 'accept') ? true : false;
+      this.getReferinList(this.beginDate, this.endDate, this.path, this.accept);
+    });
   }
 
   ngOnInit() {
@@ -73,17 +77,18 @@ export class ReferComponent implements OnInit {
       this.header = { path: '/' + this.path, name: 'Refer Back', icon: 'fa-retweet', ifdname: false, dname: '' }
     }
     this.main.inputHeader(this.header);
-    this.main.socket.off(localStorage.getItem(this.hospcode));
-    this.main.socket.on(localStorage.getItem(this.hospcode), (refer_no) => {
+    this.main.onHospcode.subscribe(() => {
       this.getReferinList(this.beginDate, this.endDate, this.path, this.accept);
-      this.main.liatReferIn();
       this.getNonRead();
     });
   }
 
   getNonRead() {
-    this.main.post('comment/nonread', { refer_no: '' }).then((row: any) => {
-      this.countReferIn = row.countReferIn[0].count;
+    this.main.post('refer/listcount', { beginDate: this.beginDate, endDate: this.endDate }).then((row: any) => {
+      if (row.ok) {
+        this.countReferIn = row.list.count;
+        this.main.listReferIn(this.beginDate, this.endDate);
+      }
     });
   }
 
@@ -107,6 +112,7 @@ export class ReferComponent implements OnInit {
     this.beginDate = e.beginDate.year + '/' + e.beginDate.month + '/' + e.beginDate.day;
     this.endDate = e.endDate.year + '/' + e.endDate.month + '/' + e.endDate.day;
     this.getReferinList(this.beginDate, this.endDate, this.path, this.accept);
+    this.getNonRead();
   }
 
   accepted(accept: boolean) {

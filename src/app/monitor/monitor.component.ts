@@ -21,7 +21,6 @@ export class MonitorComponent implements OnInit {
   referIn: any;
 
   constructor(
-    @Inject('apiUrl') private apiUrl: string,
     @Inject('REFER_HOSPCODE') private hospcode: string,
     @Inject('REFER_TOKEN') private token: string,
     @Inject('REFER_TYPE') private referType: string,
@@ -35,13 +34,13 @@ export class MonitorComponent implements OnInit {
     this.monit.token = localStorage.getItem(this.token);
     this.monit.type = localStorage.getItem(this.referType);
     this.doSave(this.monit.hospcode, this.monit.token, this.monit.type);
-    this.main.socket.off(this.monit.token);
-    this.main.socket.on(this.monit.token, async (refer_no) => {
+
+    const socket = this.main.socketMonit(this.monit.token);
+    socket.on(this.monit.token, async (refer_no) => {
       await this.referin();
       await this.switchColor(refer_no);
     });
-    this.main.socket.off('refer-monitor-reload');
-    this.main.socket.on('refer-monitor-reload', (reload) => {
+    socket.on('refer-monitor-reload', (reload) => {
       console.log(reload);
       window.location.reload(true);
     });

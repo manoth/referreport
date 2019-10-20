@@ -14,6 +14,8 @@
                 <th>สถานะการส่ง</th>
                 <th>Discussion</th>
                 <th>รายละเอียด</th>
+                <th *ngIf="path=='referout'">Tracking</th>
+                <th *ngIf="accept">ยกเลิกลงรับ</th>
             </tr>
         </thead>
         <tbody>
@@ -34,11 +36,21 @@
                 <td>{{l.pname}}{{l.fname}} {{l.lname}}</td>
                 <td>{{l.refer_date | thaidate:'short'}}</td>
                 <td>{{l.load_time || l.refer_time}}</td>
-                <td>{{l.level_name}}</td>
+                <td>
+                    <span class="badge" [ngClass]="{
+                        'bg-red': l.level_acute=='01',
+                        'bg-orange': l.level_acute=='02',
+                        'bg-yellow': l.level_acute=='03',
+                        'bg-lime': l.level_acute=='04',
+                        'bg-olive': l.level_acute=='05'
+                    }">
+                        {{l.level_name}}
+                    </span>
+                </td>
                 <td>{{l.loads_name}}</td>
                 <td class="text-center">
                     <span class="badge bg-green" *ngIf="l.reply_status=='01'">ลงรับแล้ว</span>
-                    <span class="badge bg-yellow" *ngIf="!l.reply_status">รอลงรับ</span>
+                    <span class="badge bg-orange" *ngIf="!l.reply_status">รอลงรับ</span>
                 </td>
                 <td class="text-center">
                     <a [routerLink]="['/',path,l.token_no.replace('==', '').replace('=', '')]"
@@ -57,7 +69,45 @@
                         <i class="fa fa-file-text-o" aria-hidden="true"></i>
                     </a>
                 </td>
+                <td *ngIf="path=='referout'" class="text-center">
+                    <a *ngIf="main.in_array(l.loads_id,['01','02','03'])" (click)="onTracking(l.token_no)" type="button"
+                        class="btn btn-danger btn-sm" data-toggle="modal" data-target="#modal-qrcode"
+                        data-backdrop="static">
+                        <i class="fa fa-ambulance" aria-hidden="true"></i>
+                    </a>
+                </td>
+                <td *ngIf="accept" class="text-center">
+                    <button class="btn btn-danger btn-sm" (click)="onCancel(l)">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                </td>
             </tr>
         </tbody>
     </table>
+</div>
+
+<div class="modal fade" id="modal-qrcode">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-orange">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h2 class="modal-title">
+                    <i class="fa fa-ambulance" aria-hidden="true"></i>
+                    QR CODE สำหรับรถ Ambulance
+                </h2>
+            </div>
+            <div class="modal-body text-center">
+                <!-- <qrcode *ngIf="qrCodeData" [qrdata]="qrCodeData" [size]="256" [level]="'M'"></qrcode> -->
+                <ngx-qrcode *ngIf="qrCodeData" [qrc-element-type]="url" [qrc-value]="qrCodeData"></ngx-qrcode>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">
+                    <i class="fa fa-times-circle" aria-hidden="true"></i>
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
 </div>

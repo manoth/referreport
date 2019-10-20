@@ -3,17 +3,26 @@ import { NgModule } from '@angular/core';
 
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { NgxLinkifyjsModule } from 'ngx-linkifyjs';
+
 import { JwtInterceptorService } from './services/jwt-interceptor.service';
 import { ErrorInterceptorService } from './services/error-interceptor.service';
 import { environment } from 'src/environments/environment';
 
+import { AgmCoreModule } from '@agm/core';
+import { AgmDirectionModule } from 'agm-direction';
 import { MyDateRangePickerModule } from 'mydaterangepicker';
 import { MyDatePickerModule } from 'mydatepicker';
+import { NgxQRCodeModule } from 'ngx-qrcode2';
 
 import { ThaiDatePipe } from './pipes/thaidate.pipe';
+import { TimeAgoPipe } from './pipes/time-ago.pipe';
+import { AgePipe } from './pipes/age.pipe';
 import { FilterPipe } from './pipes/filter.pipe';
 import { Nl2BrPipe } from './pipes/nl2br.pipe';
 import { UniquePipe } from './pipes/unique.pipe';
+
+import { DragDirective } from './directive/drag-drop.directive';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -36,16 +45,21 @@ import { ReferListComponent } from './pages/refer/refer-list/refer-list.componen
 import { AdduserComponent } from './pages/adduser/adduser.component';
 import { ListuserComponent } from './pages/listuser/listuser.component';
 import { ChatroomComponent } from './pages/chatroom/chatroom.component';
-import { DicomViewerLibComponent } from './pages/dicom-viewer-lib/dicom-viewer-lib.component';
+import { ForgotComponent } from './forgot/forgot.component';
+import { MapsComponent } from './pages/refer-detail/maps/maps.component';
+import { AmbulanceComponent } from './ambulance/ambulance.component';
 
 
 
 @NgModule({
   declarations: [
     ThaiDatePipe,
+    TimeAgoPipe,
+    AgePipe,
     FilterPipe,
     Nl2BrPipe,
     UniquePipe,
+    DragDirective,
     AppComponent,
     LoginComponent,
     PageNotFoundComponent,
@@ -66,15 +80,24 @@ import { DicomViewerLibComponent } from './pages/dicom-viewer-lib/dicom-viewer-l
     AdduserComponent,
     ListuserComponent,
     ChatroomComponent,
-    DicomViewerLibComponent
+    ForgotComponent,
+    MapsComponent,
+    AmbulanceComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyDFTKbcSXEN22pUx3zfaabEOGyy7oOZtmI',
+      language: 'th'
+    }),
+    AgmDirectionModule,
     MyDateRangePickerModule,
-    MyDatePickerModule
+    MyDatePickerModule,
+    NgxQRCodeModule,
+    NgxLinkifyjsModule.forRoot()
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptorService, multi: true },

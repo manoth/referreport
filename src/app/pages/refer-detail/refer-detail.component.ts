@@ -11,7 +11,7 @@ import Swal from 'sweetalert2';
 })
 export class ReferDetailComponent implements OnInit {
 
-  tabComment: boolean = false;;
+  tabId: string;
 
   loading: boolean = false;
   referId: string;
@@ -21,10 +21,12 @@ export class ReferDetailComponent implements OnInit {
   lab: any;
   path: string;
   header: any;
-  toBottom: any;
+  toDiscussion: any;
+  toMaps: any;
+
+  socket: any;
 
   constructor(
-    @Inject('apiUrl') private apiUrl: string,
     @Inject('REFER_TOKEN') private token: string,
     @Inject('SOCKET_NAME') private socketName: string,
     private router: Router,
@@ -32,6 +34,7 @@ export class ReferDetailComponent implements OnInit {
     private main: MainService
   ) {
     this.path = this.route.snapshot.url[0].path;
+    this.socket = this.main.socket();
   }
 
   ngOnInit() {
@@ -43,7 +46,7 @@ export class ReferDetailComponent implements OnInit {
       this.header = { path: '/' + this.path, name: 'Refer Back', icon: 'fa-retweet', ifdname: true, dname: '...' }
     }
     this.route.queryParams.subscribe((queryParams) => {
-      this.tabComment = (queryParams['tab'] == 'comment');
+      this.tabId = queryParams['tab'];
     });
     this.route.params.subscribe((params) => {
       try {
@@ -60,99 +63,117 @@ export class ReferDetailComponent implements OnInit {
   }
 
   // tslint:disable-next-line:variable-name Tab0-Tab1
-  async getReferDetail(refer_no: string) {
-    const row: any = await this.main.post('refer/detail', { refer_no, path: this.path });
-    if (row.ok) {
-      if (row.data.length > 0) {
-        this.loading = true;
-        this.detail = row.data[0];
-        this.header.dname = this.detail.pname + this.detail.fname + ' ' + this.detail.lname;
-        this.main.inputHeader(this.header);
-        this.getNonRead();
-        this.main.socket.on(`comment-${this.detail.refer_no}`, (username: any) => {
+  getReferDetail(refer_no: string) {
+    this.main.post('refer/detail', { refer_no, path: this.path }).then((row: any) => {
+      if (row.ok) {
+        if (row.data.length > 0) {
+          this.loading = true;
+          this.detail = row.data[0];
+          this.header.dname = this.detail.pname + this.detail.fname + ' ' + this.detail.lname;
+          this.main.inputHeader(this.header);
           this.getNonRead();
-        });
+          this.socket.on(`comment-${this.detail.refer_no}`, (read: boolean) => {
+            this.getNonRead();
+          });
+        } else {
+          this.router.navigate(['/' + this.path]);
+        }
       } else {
-        this.router.navigate(['/' + this.path]);
+        this.main.logOut();
       }
-    } else {
-      this.main.logOut();
-    }
+    }).catch((err: any) => {
+      this.router.navigate(['/']);
+    });
   }
 
   // tslint:disable-next-line:variable-name Tab2
-  async getTreatment(refer_no: string) {
-    const row: any = await this.main.post('refer/treatment', { refer_no });
-    if (row.ok) {
-      this.treatment = row.data;
-    } else {
-      this.main.logOut();
-    }
+  getTreatment(refer_no: string) {
+    this.main.post('refer/treatment', { refer_no }).then((row: any) => {
+      if (row.ok) {
+        this.treatment = row.data;
+      } else {
+        this.main.logOut();
+      }
+    }).catch((err: any) => {
+      this.router.navigate(['/']);
+    });
   }
 
   // tslint:disable-next-line:variable-name Tab3
-  async getDrug(refer_no: string) {
-    const row: any = await this.main.post('refer/drug', { refer_no });
-    if (row.ok) {
-      this.drug = row.data;
-    } else {
-      this.main.logOut();
-    }
+  getDrug(refer_no: string) {
+    this.main.post('refer/drug', { refer_no }).then((row: any) => {
+      if (row.ok) {
+        this.drug = row.data;
+      } else {
+        this.main.logOut();
+      }
+    }).catch((err: any) => {
+      this.router.navigate(['/']);
+    });
   }
 
   // tslint:disable-next-line:variable-name Tab4
-  async getLab(refer_no: string) {
-    const row: any = await this.main.post('refer/lab', { refer_no });
-    // console.log(row);
-    if (row.ok) {
-      this.lab = row.data;
-    } else {
-      this.main.logOut();
-    }
+  getLab(refer_no: string) {
+    this.main.post('refer/lab', { refer_no }).then((row: any) => {
+      // console.log(row);
+      if (row.ok) {
+        this.lab = row.data;
+      } else {
+        this.main.logOut();
+      }
+    }).catch((err: any) => {
+      this.router.navigate(['/']);
+    });
   }
 
   doCancel(e) {
     console.log('Cancel');
   }
 
-  async doSave(e) {
-    const row: any = await this.main.post('refer/reply', {
+  doSave(e) {
+    this.main.post('refer/reply', {
       refer_no: this.referId,
       memo: e.memo_destination,
       from_hospcode: e.from_hospcode,
       status: '01'
+    }).then((row: any) => {
+      if (row.ok) {
+        Swal.fire({
+          type: 'success',
+          text: row.message,
+          allowOutsideClick: false
+        }).then(() => {
+          this.socket.emit(this.socketName, { token: localStorage.getItem(this.token), refer_no: this.referId });
+          this.router.navigate(['/referin']);
+        });
+      } else {
+        Swal.fire({
+          type: 'error',
+          text: row.err,
+          allowOutsideClick: false
+        });
+      }
     });
-    if (row.ok) {
-      Swal.fire({
-        type: 'success',
-        text: row.message,
-        allowOutsideClick: false
-      }).then(() => {
-        this.main.socket.emit(this.socketName, { token: localStorage.getItem(this.token), refer_no: this.referId });
-        this.router.navigate(['/referin']);
-      });
-    } else {
-      Swal.fire({
-        type: 'error',
-        text: row.err,
-        allowOutsideClick: false
-      });
-    }
   }
 
   doResend(e) {
     console.log('Resend');
   }
 
-  onTab(e) {
-    this.toBottom = e;
+  onDiscussion(e) {
+    this.toDiscussion = e;
+  }
+
+  onMaps(e) {
+    this.toMaps = e;
   }
 
   countAlert: number = 0;
-
   getNonRead() {
     this.main.post('comment/nonread', { refer_no: this.detail.refer_no }).then((row: any) => {
-      this.countAlert = (row.data.idnonread) ? row.data.idnonread.split(',').length : 0;
+      if (row.ok) {
+        this.countAlert = (row.data.idnonread) ? row.data.idnonread.split(',').length : 0;
+      }
     });
   }
 }

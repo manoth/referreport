@@ -42,9 +42,52 @@ fieldset {
     border: 1px solid #011f4b;
 }
 
+span a.linkified {
+    color: #ffffff;
+}
+span a.linkified:hover {
+    color: #666464;
+}
 .url-color {
     color: #ffffff;
 }
 .url-color:hover {
     color: #666464;
+}
+
+.uploadfilecontainer {
+    background-image: url('../../../assets/img/cloud.png');
+    background-repeat: no-repeat;
+    background-size: 100px;
+    background-position: center;
+    width: 98%;
+    height: 576px;
+    margin: 4px auto;
+    border: 2px dashed #1C8ADB;
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: #9ecbec !important;
+    opacity: 0.8;
+}
+
+.uploadfilecontainer div.box-body div.direct-chat-messages div {
+    display: none;
+}
+
+.uploadfilecontainer div.box-footer {
+    display: none;
+}
+
+.uploadfilecontainer div.box-footer form {
+    display: none;
+}
+
+.margin-message {
+    margin: 5px 50px;
+}
+.margin-image-right {
+   margin-right: 10px;
+}
+.margin-image-left {
+   margin-left: 10px;
 }

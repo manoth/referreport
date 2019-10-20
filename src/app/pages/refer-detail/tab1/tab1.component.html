@@ -85,8 +85,8 @@
                     </div>
                 </div>
                 <div class="col-sm-4">
-                    <a data-lightbox="image" href="./assets/img/2019-08-05_14-14-43.png">
-                        <img class="img-responsive" src="./assets/img/2019-08-05_14-14-43.png" />
+                    <a data-lightbox="image" href="./assets/img/level-of-patien-acuity.png">
+                        <img class="img-responsive" src="./assets/img/level-of-patien-acuity.png" />
                     </a>
                     <p></p>
                     <div class="input-group input-group-sm">
@@ -146,7 +146,7 @@
 
         <p></p>
         <fieldset>
-            <legend>การประเมินผู้ป่วย</legend>
+            <legend>การประเมินผู้ป่วยแรกรับ ลงวันที่ {{tab1?.vst_date | thaidate:'medium'}}</legend>
             <div class="row">
                 <div class="col-sm-2">
                     <table class="table table-bordered small">
@@ -278,10 +278,10 @@
         </div>
         <div class="row" style="padding-top: 15px" *ngIf="!tab1?.reply_status && path=='referin'">
             <div class="col-sm-4">
-                <button type="button" class="btn btn-block btn-danger" (click)="doCancel()">
+                <!-- <button type="button" class="btn btn-block btn-danger" (click)="doCancel()">
                     <i class="fa fa-trash" aria-hidden="true"></i>
                     ปฏิเสธ
-                </button>
+                </button> -->
             </div>
             <div class="col-sm-4">
                 <button type="button" class="btn btn-block btn-success" (click)="doSave()">
@@ -290,10 +290,10 @@
                 </button>
             </div>
             <div class="col-sm-4">
-                <button type="button" class="btn btn-block btn-info" (click)="doResend()">
+                <!-- <button type="button" class="btn btn-block btn-info" (click)="doResend()">
                     <i class="fa fa-paper-plane" aria-hidden="true"></i>
                     ส่งต่อ
-                </button>
+                </button> -->
             </div>
         </div>
     </div>

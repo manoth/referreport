@@ -20,6 +20,9 @@ export class ContentHeaderComponent implements OnInit {
       this.header = data;
     });
     this.user = this.main.decodeToken();
+    this.main.getDcodedToken.subscribe((data: any) => {
+      this.user = data;
+    });
   }
 
 }

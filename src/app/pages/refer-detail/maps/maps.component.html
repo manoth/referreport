@@ -1,0 +1,16 @@
+<div class="row" *ngIf="loding">
+    <div class="col-md-8">
+        <agm-map [latitude]="lat" [longitude]="lng" [disableDefaultUI]="false">
+            <agm-direction *ngIf="road" [origin]="road.origin" [destination]="road.destination"
+                [renderOptions]="road.renderOptions" [markerOptions]="road.markerOptions" [panel]="myPanel">
+            </agm-direction>
+            <agm-direction *ngIf="road && dir" [origin]="dir.origin" [destination]="road.destination"
+                [renderOptions]="dir.renderOptions" [markerOptions]="dir.markerOptions"
+                (onResponse)="getResponse($event)">
+            </agm-direction>
+        </agm-map>
+    </div>
+    <div class="col-md-4">
+        <div #myPanel></div>
+    </div>
+</div>

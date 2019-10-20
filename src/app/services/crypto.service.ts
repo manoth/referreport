@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import * as CryptoJs from 'crypto-js';
 
 @Injectable({
@@ -6,19 +6,7 @@ import * as CryptoJs from 'crypto-js';
 })
 export class CryptoService {
 
-  constructor(
-    @Inject('SECRET_KEY') private SECRET_KEY: string,
-  ) { }
-
-  // encrypt(data: string) {
-  //   const ciphertext = CryptoJs.AES.encrypt(data, this.SECRET_KEY);
-  //   return ciphertext.toString();
-  // }
-
-  // decrypt(enc: string) {
-  //   const bytes = CryptoJs.AES.decrypt(enc, this.SECRET_KEY);
-  //   return bytes.toString(CryptoJs.enc.Utf8);
-  // }
+  constructor() { }
 
   // base64 encoded
   utoa(str: string) {

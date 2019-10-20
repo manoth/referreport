@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { MainService } from 'src/app/services/main.service';
 
 @Component({
@@ -8,15 +8,24 @@ import { MainService } from 'src/app/services/main.service';
 })
 export class LayoutComponent implements OnInit {
 
+  socket: any;
+  user: any;
+
   constructor(
+    @Inject('TOKENNAME') private tokenName: string,
     private main: MainService
   ) { }
 
   ngOnInit() {
     document.body.className = 'hold-transition skin-green layout-top-nav fixed';
-    this.main.socket.off('connect');
-    this.main.socket.on('connect', () => {
-      this.main.socket.emit('r9refer-username-online', this.main.decodeToken().username);
+    this.user = this.main.decodeToken();
+    this.socket = this.main.socket(localStorage.getItem(this.tokenName));
+    this.socket.on('r9refer-username-online', (user: any) => {
+      // console.log(user);
+      this.main.userOnline(user);
+      if (user.username == this.user.username && !user.on) {
+        this.main.socket(localStorage.getItem(this.tokenName));
+      }
     });
   }
 

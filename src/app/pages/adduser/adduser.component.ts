@@ -24,8 +24,10 @@ export class AdduserComponent implements OnInit {
   prename: any;
   position: any;
   hospcode: any;
+  username: string;
+  cid: string;
 
-  imgURL: any = './assets/img/profile-avatar.jpg';
+  imgURL: any;
   image: File = null;
   password: string;
   repassword: string;
@@ -46,6 +48,8 @@ export class AdduserComponent implements OnInit {
   hasBirth: boolean = false;
   hasPosition: boolean = false;
   hasImage: boolean = true;
+
+  userLoading: boolean = false;
 
   ngAfterViewInit() {
     $('#inputPname').on('change', (event) => {
@@ -81,6 +85,7 @@ export class AdduserComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.imgURL = './assets/img/profile-avatar-user-' + this.user.sex + '.png';
     this.path = this.route.snapshot.url[0].path
     this.main.inputHeader({ path: '/adduser', name: 'เพิ่มบัญชีผู้ใช้', icon: 'fa-user-plus', ifdname: false, dname: '' });
     this.route.params.subscribe((params) => {
@@ -115,6 +120,7 @@ export class AdduserComponent implements OnInit {
   }
 
   getUser(username: string) {
+    this.userLoading = true;
     this.main.post('adduser/username', { username }).then((row: any) => {
       this.editProfile = row.okget;
       if (row.okget) {
@@ -123,6 +129,8 @@ export class AdduserComponent implements OnInit {
             path: '/editprofile', name: 'แก้ไขบัญชีผู้ใช้', icon: 'fa-pencil-square-o',
             ifdname: true, dname: row.data[0].prename + row.data[0].fname + ' ' + row.data[0].lname
           });
+          this.cid = row.data[0].cid;
+          this.username = row.data[0].username;
           this.pname = row.data[0].prename;
           this.user.cid = row.data[0].cid;
           this.user.username = row.data[0].username;
@@ -138,11 +146,13 @@ export class AdduserComponent implements OnInit {
           this.user.tel = row.data[0].tel;
           this.user.sex = row.data[0].sex;
           this.user.image = row.data[0].image;
-          this.imgURL = row.data[0].image || this.imgURL;
+          this.imgURL = row.data[0].image || './assets/img/profile-avatar-user-' + this.user.sex + '.png';
           this.user.status = row.data[0].status;
           this.user.staff = row.data[0].staff;
           this.user.linetoken = row.data[0].linetoken;
           this.user.active = row.data[0].active;
+
+          this.userLoading = false;
         } else {
           this.router.navigate(['/adduser']);
         }
@@ -153,7 +163,8 @@ export class AdduserComponent implements OnInit {
   }
 
   fileProgress(files: any) {
-    this.imgURL = (this.user.image) ? this.user.image : './assets/img/profile-avatar.jpg';
+    this.image = null;
+    this.imgURL = this.user.image || './assets/img/profile-avatar-user-' + this.user.sex + '.png';
     if (files.length > 0) {
       const mimeType = files[0].type;
       if (mimeType.match(/image\/*/) == null) {
@@ -241,27 +252,40 @@ export class AdduserComponent implements OnInit {
                 this.router.navigate(['/listuser']);
               });
             } else {
-              Swal.fire({
-                type: 'success',
-                title: title,
-                text: 'คุณต้องการที่จะเพิ่มบัญชีผู้ใช้ ภายในหน่วยงานของคุณอีกหรือไหม?',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'ต้องการ',
-                cancelButtonText: 'ไม่ต้องการ',
-                allowOutsideClick: false
-              }).then((result) => {
-                if (!result.value) {
-                  this.router.navigate(['/listuser']);
-                } else {
-                  $('#reset').click();
-                  this.user.hospcode = '';
-                  this.user.pname = '';
-                  this.user.position = '';
-                  this.imgURL = './assets/img/profile-avatar.jpg';
-                }
-              });
+              if (this.decode.status > '1') {
+                Swal.fire({
+                  type: 'success',
+                  title: title,
+                  text: 'คุณต้องการที่จะเพิ่มบัญชีผู้ใช้ ภายในหน่วยงานของคุณอีกหรือไหม?',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: 'ต้องการ',
+                  cancelButtonText: 'ไม่ต้องการ',
+                  allowOutsideClick: false
+                }).then((result) => {
+                  if (!result.value) {
+                    this.router.navigate(['/listuser']);
+                  } else {
+                    $('#reset').click();
+                    this.user.hospcode = '';
+                    this.user.pname = '';
+                    this.user.position = '';
+                    this.imgURL = './assets/img/profile-avatar-user-' + this.user.sex + '.png';
+                  }
+                });
+              } else {
+                Swal.fire({
+                  position: 'top-end',
+                  type: 'success',
+                  title: 'คุณลงทะเบียนเข้าใช้ระบบ R9Refer เรียบร้อยแล้ว!',
+                  showConfirmButton: false,
+                  timer: 1500,
+                  allowOutsideClick: false
+                }).then(() => {
+                  this.main.logOut();
+                });
+              }
             }
           } else {
             Swal.fire({
@@ -370,6 +394,12 @@ export class AdduserComponent implements OnInit {
     return this.hasBirth = (!str) ? true : false;
   }
 
+  onSex(str: any) {
+    if (!this.image) {
+      this.imgURL = this.user.image || './assets/img/profile-avatar-user-' + str + '.png';
+    }
+  }
+
   onPosition(str: string) {
     return this.hasPosition = (!str) ? true : false;
   }
@@ -386,6 +416,16 @@ export class AdduserComponent implements OnInit {
     } else {
       return false;
     }
+  }
+
+  userStatus(arr: any, status: any, username: any) {
+    let arrStatus = [];
+    for (let i = 0; i < arr.length; i++) {
+      if (((this.decode.username == username && arr[i].key == status) || arr[i].key < status) && (arr[i].key != '0' || status > 3)) {
+        arrStatus.push(arr[i]);
+      }
+    }
+    return arrStatus;
   }
 
 }

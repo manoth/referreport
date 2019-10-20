@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/common/http';
+import { HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -18,11 +18,11 @@ export class ErrorInterceptorService {
     return next.handle(request).pipe(catchError(err => {
       if (err) {
         this.main.logOut();
-        location.reload(true);
+        // location.reload(true);
       }
       const error = err.error.message || err.statusText;
       return throwError(error);
-    }))
+    }));
   }
 
 }

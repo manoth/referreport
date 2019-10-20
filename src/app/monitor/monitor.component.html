@@ -48,11 +48,15 @@
                         {{ counterTime(r?.load_date, r?.load_time) }}
                     </td>
                     <td style="font-size: 20px" [ngClass]="{
-                        'bg-red': r.level_acute==01 || r.level_acute==02,
-                        'bg-fuchsia': r.level_acute==03 || r.level_acute==04,
-                        'bg-yellow': r.level_acute==05
+                        'bg-red': r.level_acute=='01',
+                        'bg-orange': r.level_acute=='02',
+                        'bg-yellow': r.level_acute=='03',
+                        'bg-lime': r.level_acute=='04',
+                        'bg-olive': r.level_acute=='05'
                     }">{{ r?.level_name }}</td>
-                    <td>{{ r?.loads_name }}</td>
+                    <td>
+                        <img src="./assets/img/monitor/{{r?.loads_id}}.png" height="45px" />
+                    </td>
                 </tr>
             </tbody>
         </table>

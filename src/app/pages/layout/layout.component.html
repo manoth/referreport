@@ -1,5 +1,5 @@
 <div class="wrapper" (mouseover)="main.onOver()">
-    <app-header></app-header>
+    <app-header *ngIf="socket" [socket]="socket" [user]="user"></app-header>
     <div class="content-wrapper">
         <div class="container body-width">
             <app-content-header></app-content-header>

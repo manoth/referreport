@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class JwtInterceptorService {
+export class JwtInterceptorService implements HttpInterceptor {
 
   constructor(
     @Inject('TOKENNAME') private tokenName: string
@@ -15,7 +15,7 @@ export class JwtInterceptorService {
     if (token) {
       request = request.clone({
         setHeaders: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         }
       });
     }

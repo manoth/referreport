@@ -1,14 +1,14 @@
 <section class="content">
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
-            <li [ngClass]="{'active': !tabComment}">
+            <li [class.active]="tabId=='detail'|| !tabId">
                 <a href="#detail" data-toggle="tab" aria-expanded="true">
                     <i class="fa fa-file-text-o" aria-hidden="true"></i>
                     รายละเอียด
                 </a>
             </li>
-            <li [ngClass]="{'active': tabComment}">
-                <a (click)="onTab($event); countAlert=0;" href="#comment" data-toggle="tab" aria-expanded="true">
+            <li [class.active]="tabId=='comment'">
+                <a (click)="onDiscussion($event); countAlert=0;" href="#comment" data-toggle="tab" aria-expanded="true">
                     <i class="fa fa-comments" aria-hidden="true"></i>
                     Discussion
                     <sup>
@@ -18,9 +18,15 @@
                     </sup>
                 </a>
             </li>
+            <li [class.active]="tabId=='maps'">
+                <a (click)="onMaps($event)" href="#maps" data-toggle="tab" aria-expanded="true">
+                    <i class="fa fa-ambulance" aria-hidden="true"></i>
+                    แผนที่เดินทาง
+                </a>
+            </li>
         </ul>
         <div class="tab-content">
-            <div class="tab-pane" id="detail" [ngClass]="{'active': !tabComment}">
+            <div class="tab-pane" id="detail" [class.active]="tabId=='detail'|| !tabId">
                 <div class="boxLoading" *ngIf="!loading"></div>
                 <app-tab0 *ngIf="loading" [detail]="detail"></app-tab0>
                 <app-tab1 *ngIf="loading" [tab1]="detail" [path]="path" (cancel)="doCancel($event)"
@@ -30,9 +36,13 @@
                 <app-tab3 *ngIf="loading" [tab3]="drug"></app-tab3>
                 <app-tab4 *ngIf="loading" [tab4]="lab"></app-tab4>
             </div>
-            <div class="tab-pane" id="comment" [ngClass]="{'active': tabComment}">
-                <app-tab5 *ngIf="loading" [referNo]="detail?.refer_no" [toBottom]="toBottom" (overRead)="countAlert=0">
+            <div class="tab-pane" id="comment" [class.active]="tabId=='comment'">
+                <app-tab5 *ngIf="loading" [socket]="socket" [referNo]="detail?.refer_no" [toDiscussion]="toDiscussion"
+                    (overRead)="countAlert=0">
                 </app-tab5>
+            </div>
+            <div class="tab-pane" id="maps" [class.active]="tabId=='maps'">
+                <app-maps *ngIf="loading" [socket]="socket" [referNo]="detail?.refer_no" [toMaps]="toMaps"></app-maps>
             </div>
         </div>
     </div>

@@ -1,5 +1,8 @@
 <section class="content">
     <div class="box box-primary box-solid">
+        <div class="overlay" *ngIf="userLoading">
+            <i class="fa fa-refresh fa-spin"></i>
+        </div>
         <div class="box-header with-border">
             <h3 class="box-title" *ngIf="!editProfile">
                 เพิ่มบัญชีผู้ใช้ ภายในหน่วยงานของท่าน
@@ -21,10 +24,14 @@
                             <div class="form-group" [ngClass]="{'has-error': hasUser}">
                                 <label for="inputUsername" class="col-sm-4 control-label">Username</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control" [(ngModel)]="user.username" name="username"
-                                        id="inputUsername" placeholder="Username" (change)="onUsername(user.username)"
+                                    <input *ngIf="!editProfile" type="text" class="form-control"
+                                        [(ngModel)]="user.username" name="username" id="inputUsername"
+                                        placeholder="Username" (change)="onUsername(user.username)"
                                         (blur)="onUsername(user.username)" (keyup)="onUsername(user.username)"
-                                        [disabled]="editProfile" required>
+                                        [disabled]="editProfile" autofocus required>
+                                    <input *ngIf="editProfile" type="text" class="form-control" [(ngModel)]="username"
+                                        name="username" id="inputUsername" placeholder="Username"
+                                        [disabled]="editProfile">
                                     <span class="help-block" *ngIf="hasUser">{{txtErrUser}}</span>
                                 </div>
                             </div>
@@ -75,14 +82,17 @@
                             <div class="form-group" [ngClass]="{'has-error': hasCid}">
                                 <label for="inputCid" class="col-sm-4 control-label">รหัสประชาชน</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control" [(ngModel)]="user.cid" name="cid"
-                                        id="inputCid" placeholder="เลขประจำตัวประชาชน" (change)="onCid(user.cid)"
-                                        (blur)="onCid(user.cid)" (keyup)="onCid(user.cid)" [disabled]="editProfile"
-                                        required>
+                                    <input *ngIf="!editProfile" type="text" class="form-control" [(ngModel)]="user.cid"
+                                        name="cid" id="inputCid" placeholder="เลขประจำตัวประชาชน"
+                                        (change)="onCid(user.cid)" (blur)="onCid(user.cid)" (keyup)="onCid(user.cid)"
+                                        [disabled]="editProfile" required>
+                                    <input *ngIf="editProfile" type="text" class="form-control" [(ngModel)]="cid"
+                                        name="cid" id="inputCid" placeholder="เลขประจำตัวประชาชน"
+                                        [disabled]="editProfile">
                                     <span class="help-block" *ngIf="hasCid">{{txtErrCid}}</span>
                                 </div>
                             </div>
-                            <div class="form-group" *ngIf="main.in_array(decode.status, ['0', '3'])">
+                            <div class="form-group" *ngIf="decode.status>='3' || decode.status=='0'">
                                 <label for="inputHospcode" class="col-sm-4 control-label">สถานบริการ</label>
                                 <div class="col-sm-8">
                                     <select [(ngModel)]="user.hospcode" name="hospcode" id="inputHospcode"
@@ -139,13 +149,13 @@
                                 <label for="inputSex" class="col-sm-4 control-label">เพศ</label>
                                 <div class="col-sm-8 text-center" style="padding-top: 8px;">
                                     <label class="col-sm-6">
-                                        <input type="radio" [(ngModel)]="user.sex" name="sex" value="ชาย"
-                                            class="minimal-red" checked>
+                                        <input (change)="onSex(user.sex)" type="radio" [(ngModel)]="user.sex" name="sex"
+                                            value="ชาย" class="minimal-red" checked>
                                         ชาย
                                     </label>
                                     <label class="col-sm-6">
-                                        <input type="radio" [(ngModel)]="user.sex" name="sex" value="หญิง"
-                                            class="minimal-red">
+                                        <input (change)="onSex(user.sex)" type="radio" [(ngModel)]="user.sex" name="sex"
+                                            value="หญิง" class="minimal-red">
                                         หญิง
                                     </label>
                                 </div>
@@ -191,7 +201,7 @@
                                         name="linetoken" id="inputLineToken" placeholder="Line Token ส่วนตัว">
                                 </div>
                             </div>
-                            <div class="form-group" *ngIf="decode.status>user.status">
+                            <div class="form-group" *ngIf="decode.status>user.status && decode.username!=user.username">
                                 <label for="inputActive" class="col-sm-4 control-label">สถานะการใข้งาน</label>
                                 <div class="col-sm-8">
                                     <select [(ngModel)]="user.active" name="active" id="inputActive"
@@ -201,15 +211,15 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group" *ngIf="decode.status=='3'">
+                            <div class="form-group" *ngIf="decode.status>='3'">
                                 <label for="inputStatus" class="col-sm-4 control-label">สิทธิ์ผู้ใช้งาน</label>
                                 <div class="col-sm-8">
                                     <select [(ngModel)]="user.status" name="status" id="inputStatus"
                                         class="form-control" style="width: 100%;">
-                                        <option value="0">Register</option>
-                                        <option value="1">User</option>
-                                        <option value="2">Admin</option>
-                                        <option value="3">Developer</option>
+                                        <option *ngFor="let s of userStatus(main.status,decode.status,user.username)"
+                                            [value]="s.key">
+                                            {{ s.value }}
+                                        </option>
                                     </select>
                                 </div>
                             </div>

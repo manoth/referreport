@@ -1,8 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component, OnInit, Inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { MainService } from 'src/app/services/main.service';
-import 'bootstrap-notify';
-declare const $: any;
 
 @Component({
   selector: 'app-chatroom',
@@ -24,42 +22,29 @@ export class ChatroomComponent implements OnInit {
   constructor(
     private router: Router,
     private main: MainService
-  ) {
+  ) { }
+
+  ngAfterViewInit() {
+    this.getMessage(false);
     this.getOnline();
   }
 
-  ngAfterViewInit() {
-    this.getMessage();
-  }
-
   ngOnInit() {
+    this.decoded = this.main.decodeToken();
     this.main.inputHeader({ path: '/chatroom', name: 'Online Chat', subname: 'R9refer', icon: 'fa-comments', ifdname: false, dname: '' });
-    this.main.socket.off('chat-' + this.room);
-    this.main.socket.on('chat-' + this.room, (res: any) => {
-      this.getMessage();
-    });
-    this.main.socket.off('r9refer-username-online');
-    this.main.socket.on('r9refer-username-online', (username: any) => {
-      this.getOnline();
-      // this.main.getOnlineNotify(username);
+    this.main.arrUser.subscribe((user: any) => {
+      if (!this.main.in_array(user.username, this.arrUser) || !user.on) {
+        this.getOnline();
+      }
     });
     this.main.eventOver.subscribe(() => {
       if (this.router.routerState.snapshot.url == '/chatroom') {
         this.onOverRead();
       }
     });
-    this.decoded = this.main.decodeToken();
-  }
-
-  scrollToBottom(): void {
-    setTimeout(() => {
-      try {
-        const myScrollContainer = document.getElementById('scrollChatRoom');
-        myScrollContainer.scrollTop = myScrollContainer.scrollHeight;
-      } catch (err) {
-        // console.log(err);
-      }
-    }, 200);
+    this.main.socket().on('chat-' + this.room, (read: boolean) => {
+      this.getMessage(read);
+    });
   }
 
   getOnline() {
@@ -74,20 +59,31 @@ export class ChatroomComponent implements OnInit {
     });
   }
 
-  getMessage() {
+  getMessage(read: boolean) {
     this.main.get(`chat/${this.room}`).then((rows: any) => {
       this.liading = false;
-      this.idNonRead = rows.idnonread[0].idnonread;
-      this.messenger = rows.data;
-      this.scrollToBottom();
+      if (rows.ok) {
+        this.idNonRead = rows.idnonread[0].idnonread;
+        if (!read) {
+          this.messenger = rows.data;
+        } else {
+          for (let i = 0; i < rows.data.length; i++) {
+            if (rows.data[i].username == this.decoded.username) {
+              this.messenger[i].read = rows.data[i].read;
+            }
+          }
+        }
+      }
     });
   }
 
-  onSend() {
-    if (this.message) {
+  onSend(event?: any) {
+    if (event)
+      event.preventDefault();
+    if (this.message && this.message.trim()) {
       let data: any = {
         refer_no: this.room,
-        comment: this.message
+        comment: this.message.trim()
       }
       this.main.post('chat', data).then((res: any) => {
         this.message = null;
@@ -95,13 +91,27 @@ export class ChatroomComponent implements OnInit {
     }
   }
 
+  pasteImage(even: any) {
+    const items = even.clipboardData.items;
+    for (var i = 0; i < items.length; i++) {
+      if (items[i].getAsFile()) {
+        this.onSendImage(even.clipboardData.files)
+      }
+    }
+  }
+
   onSendImage(files: any) {
+    // console.log(files[0]);
     if (files.length > 0) {
       const formData: FormData = new FormData();
       const mimeType = files[0].type;
       if (mimeType.match(/image\/*/) == null) {
-        alert('ประเภทไฟล์ที่เลือกไม่ถูกต้อง!');
-        return;
+        if (mimeType != 'application/dicom') {
+          alert('ประเภทไฟล์ที่เลือกไม่ถูกต้อง!');
+          return;
+        } else {
+          this.onSendFile(files);
+        }
       } else {
         this.liading = true;
         const image = files[0];
@@ -146,6 +156,24 @@ export class ChatroomComponent implements OnInit {
         // console.log(res);
       });
     }
+  }
+
+  statusName(status: any) {
+    for (let i = 0; i < this.main.status.length; i++) {
+      if (this.main.status[i].key == status) {
+        return this.main.status[i].value;
+      }
+    }
+  }
+
+  onlineCustom(userOnline: any) {
+    let arrUser = [];
+    for (let i = 0; i < userOnline.length; i++) {
+      if (userOnline[i].status != '0' || this.decoded.status >= '4') {
+        arrUser.push(userOnline[i]);
+      }
+    }
+    return arrUser;
   }
 
 }

@@ -49,10 +49,10 @@
                     <li routerLinkActive="active" *ngIf="user?.status>'1'">
                         <a [routerLink]="['/listuser']">
                             <i class="fa fa-address-book-o" aria-hidden="true"></i>
-                            รายชื่อผู้ใช้
+                            รายชื่อบัญชีผู้ใช้
                         </a>
                     </li>
-                    <li routerLinkActive="active" *ngIf="user?.status!='1'">
+                    <li routerLinkActive="active" *ngIf="user?.status>'1' || user?.status=='0'">
                         <a [routerLink]="['/adduser']">
                             <i class="fa fa-user-plus" aria-hidden="true"></i>
                             เพิ่มบัญชีผู้ใช้
@@ -91,23 +91,69 @@
                             </span>
                         </a>
                     </li>
-                    <li class="dropdown notifications-menu">
+                    <li class="dropdown notifications-menu" *ngIf="user?.status>'0'">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                             <i class="fa fa-bell-o" aria-hidden="true"></i>
-                            <span class="label label-danger">10</span>
+                            <span class="label label-danger" *ngIf="commentAlert>0">
+                                {{ commentAlert }}
+                            </span>
                         </a>
                         <ul class="dropdown-menu">
-                            <li class="header">You have 10 notifications</li>
+                            <li class="header text-center bg-orange">
+                                <i class="fa fa-bell-o" aria-hidden="true"></i>
+                                รายการ Discussion 20 ลำดับล่าสุด
+                            </li>
                             <li>
                                 <ul class="menu">
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-users text-aqua"></i> 5 new members joined today
+                                    <li *ngFor="let c of commentList; let i=index;"
+                                        [class.bg-gray]="main.in_array(c.refer_no,arrReferNo)">
+                                        <a [routerLink]="[c.router_path,c.referno_token]"
+                                            [queryParams]="{tab:'comment'}">
+                                            <!-- <i class="fa fa-comment" *ngIf="main.in_array(c.refer_no,arrReferNo)"></i>
+                                            <i class="fa fa-comment-o"
+                                                *ngIf="!main.in_array(c.refer_no,arrReferNo)"></i> -->
+                                            <img class="direct-chat-img"
+                                                [src]="c?.image || './assets/img/profile-avatar-user-'+c?.sex+'.png'"
+                                                alt="message user image">&nbsp;&nbsp;
+                                            {{ c.refer_no }}
+                                            <img *ngIf="c.type=='image'" class="pull-right"
+                                                [src]="c.comment.split('|')[1]" height="45px;" />
+                                            <i *ngIf="c.type=='file'"
+                                                class="pull-right fa fa-paperclip fa-flip-horizontal fa-2x"
+                                                aria-hidden="true"></i>
+                                            <br>&nbsp;&nbsp;
+                                            {{ (c.fname+' '+c.lname).substring(0,15) }}...
+                                            <span *ngIf="c.type=='message'">
+                                                <i class="fa fa-commenting-o" aria-hidden="true"></i>
+                                                {{ c.comment }}
+                                            </span>
+                                            <span *ngIf="c.type=='image'">
+                                                <i class="fa fa-picture-o" aria-hidden="true"></i>
+                                            </span>
+                                            <span *ngIf="c.type=='file'">
+                                                <i class="fa fa-download" aria-hidden="true"></i>
+                                                {{ (c.comment.split('/')[c.comment.split('/').length-1]).substring(14) }}
+                                            </span>
+                                            <br>&nbsp;&nbsp;
+                                            <i class="fa"
+                                                [ngClass]="(main.in_array(c.refer_no,arrReferNo))?'fa-paper-plane text-maroon':'fa-paper-plane-o'"></i>
+                                            &nbsp;&nbsp;
+                                            <i class="fa fa-clock-o"></i>
+                                            {{ c.d_update | timeAgo:dateNow }}
+                                            &nbsp;&nbsp;
+                                            <i class="fa"
+                                                [ngClass]="(main.in_array(c.refer_no,arrReferNo))?'fa-envelope text-maroon':'fa-envelope-open-o'"></i>
                                         </a>
+                                    </li>
+                                    <li *ngIf="!commentList" class="text-center" style="font-size: 12px; color:gray;">
+                                        ไม่พบรายการใหม่ใน Discussion
                                     </li>
                                 </ul>
                             </li>
-                            <li class="footer"><a href="#">View all</a></li>
+                            <!-- <li class="dropdown-divider"></li> -->
+                            <li class="footer" style="background-color: rgb(216, 215, 215);">
+                                <a href="javascrip:void(0);">Close</a>
+                            </li>
                         </ul>
                     </li>
                     <!-- User Account Menu -->
@@ -115,18 +161,20 @@
                         <!-- Menu Toggle Button -->
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <!-- The user image in the navbar-->
-                            <img *ngIf="!user?.image" src="./assets/img/profile-avatar.jpg" class="user-image"
-                                alt="User Image">
-                            <img *ngIf="user?.image" [src]="user.image" class="user-image" alt="User Image">
+                            <!-- <img *ngIf="!user?.image" src="./assets/img/profile-avatar-user-{{user?.sex}}.png"
+                                class="user-image" alt="User Image"> -->
+                            <img [src]="user?.image || './assets/img/profile-avatar-user-'+user?.sex+'.png'"
+                                class="user-image" alt="User Image">
                             <!-- hidden-xs hides the username on small devices so only the image appears. -->
                             <span class="hidden-xs">{{user?.fname}} {{user?.lname}}</span>
                         </a>
                         <ul class="dropdown-menu">
                             <!-- The user image in the menu -->
                             <li class="user-header">
-                                <img *ngIf="!user?.image" src="./assets/img/profile-avatar.jpg" class="img-circle"
-                                    alt="User Image">
-                                <img *ngIf="user?.image" [src]="user.image" class="img-circle" alt="User Image">
+                                <!-- <img *ngIf="!user?.image" src="./assets/img/profile-avatar-user-{{user?.sex}}.png"
+                                    class="img-circle" alt="User Image"> -->
+                                <img [src]="user?.image || './assets/img/profile-avatar-user-'+user?.sex+'.png'"
+                                    class="img-circle" alt="User Image">
 
                                 <p>
                                     {{user?.pname}}{{user?.fname}} {{user?.lname}}

@@ -45,8 +45,8 @@
                 (tokenNo)="toDetail($event)"></app-refer-list>
             <div class="nav-tabs-custom" *ngIf="path=='referin'">
                 <ul class="nav nav-tabs">
-                    <li class="active">
-                        <a href="#tab1" (click)="accepted(false)" data-toggle="tab" aria-expanded="true">
+                    <li [class.active]="!tabId">
+                        <a [routerLink]="['/'+path]" (click)="accepted(false)" data-toggle="tab" aria-expanded="true">
                             <i class="fa fa-refresh" aria-hidden="true"></i>
                             รอลงรับ
                             <sup>
@@ -56,20 +56,23 @@
                             </sup>
                         </a>
                     </li>
-                    <li>
-                        <a href="#tab2" (click)="accepted(true)" data-toggle="tab" aria-expanded="true">
+                    <li [class.active]="tabId=='accept'">
+                        <a [routerLink]="['/'+path]" [queryParams]="{tab:'accept'}" (click)="accepted(true)"
+                            data-toggle="tab" aria-expanded="true">
                             <i class="fa fa-check-square-o" aria-hidden="true"></i>
                             ลงรับแล้ว
                         </a>
                     </li>
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane active" id="tab1">
-                        <app-refer-list [lists]="lists" [path]="path" [search]="search" (tokenNo)="toDetail($event)">
+                    <div class="tab-pane" id="tab1" [class.active]="!tabId">
+                        <app-refer-list [accept]="accept" [lists]="lists" [path]="path" [search]="search"
+                            (tokenNo)="toDetail($event)">
                         </app-refer-list>
                     </div>
-                    <div class="tab-pane" id="tab2">
-                        <app-refer-list [lists]="lists" [path]="path" [search]="search" (tokenNo)="toDetail($event)">
+                    <div class="tab-pane" id="accept" [class.active]="tabId=='accept'">
+                        <app-refer-list [accept]="accept" [lists]="lists" [path]="path" [search]="search"
+                            (tokenNo)="toDetail($event)">
                         </app-refer-list>
                     </div>
                 </div>

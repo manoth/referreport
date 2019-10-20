@@ -34,10 +34,18 @@
             <hr style="border: 0.5px solid darkgrey;" />
             <div class="row">
                 <div class="col-xs-12">
-                    <a [routerLink]="['/monitor']" target="_blank">
-                        <i class="fa fa-desktop" aria-hidden="true"></i>
-                        Monitor
-                    </a>
+                    <div class="pull-left">
+                        <a [routerLink]="['/monitor']" target="_blank">
+                            <i class="fa fa-desktop" aria-hidden="true"></i>
+                            Monitor
+                        </a>
+                    </div>
+                    <div class="pull-right">
+                        <a [routerLink]="['/forgot']">
+                            <i class="fa fa-key fa-flip-horizontal" aria-hidden="true"></i>
+                            ลืมรหัสผ่าน
+                        </a>
+                    </div>
                 </div>
                 <!-- /.col -->
             </div>

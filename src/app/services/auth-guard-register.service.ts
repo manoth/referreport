@@ -28,7 +28,7 @@ export class AuthGuardRegisterService {
         return false;
       } else {
         const decoded = this.jwtHelper.decodeToken(token);
-        if (this.main.in_array(decoded.status, ['0', '2', '3'])) {
+        if (this.main.in_array(decoded.status, ['0', '2', '3', '4'])) {
           return true;
         } else {
           this.router.navigate(['/editprofile']);

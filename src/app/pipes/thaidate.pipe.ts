@@ -35,15 +35,15 @@ export class ThaiDatePipe implements PipeTransform {
             dataDate[3] + 543
         ];
         let returnDate: string;
-        returnDate = outputDateMedium.join(" ");
+        returnDate = outputDateMedium.join(' ');
         if (format == 'full') {
-            returnDate = outputDateFull.join(" ");
+            returnDate = outputDateFull.join(' ');
         }
         if (format == 'medium') {
-            returnDate = outputDateMedium.join(" ");
+            returnDate = outputDateMedium.join(' ');
         }
         if (format == 'short') {
-            returnDate = outputDateShort.join(" ");
+            returnDate = outputDateShort.join(' ');
         }
         return returnDate;
     }

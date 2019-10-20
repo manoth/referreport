@@ -15,6 +15,8 @@ export class ListuserComponent implements OnInit {
   list: any;
   decoded: any;
   search: string = '';
+  hospital: string = '';
+  changwat: string = '';
   userLoading: boolean = true;
 
   ngAfterViewInit() {
@@ -33,6 +35,7 @@ export class ListuserComponent implements OnInit {
     this.main.inputHeader({ path: '/listuser', name: 'รายชื่อผู้ใช้ในหน่วยงาน', icon: 'fa-list-alt', ifdname: false, dname: '' });
     this.getListuser();
     this.decoded = this.main.decodeToken();
+    this.changwat = this.decoded.provcode;
     // this.search = (this.decoded.status == '2') ? this.decoded.hospname : '';
   }
 
@@ -87,17 +90,12 @@ export class ListuserComponent implements OnInit {
   }
 
   status(str: string) {
-    let status;
-    if (str == '1') {
-      status = 'User';
-    } else if (str == '2') {
-      status = 'Admin';
-    } else if (str == '3') {
-      status = 'Developer';
-    } else {
-      status = 'Register';
+    let status = this.main.status;
+    for (let i = 0; i < status.length; i++) {
+      if (status[i].key == str) {
+        return status[i].value;
+      }
     }
-    return status;
   }
 
   changeStatus(active, username) {

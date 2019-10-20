@@ -12,13 +12,16 @@ import { ReferDetailComponent } from './pages/refer-detail/refer-detail.componen
 import { AdduserComponent } from './pages/adduser/adduser.component';
 import { ListuserComponent } from './pages/listuser/listuser.component';
 import { ChatroomComponent } from './pages/chatroom/chatroom.component';
-import { DicomViewerLibComponent } from './pages/dicom-viewer-lib/dicom-viewer-lib.component';
+import { ForgotComponent } from './forgot/forgot.component';
+import { AmbulanceComponent } from './ambulance/ambulance.component';
 
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
+  { path: 'forgot', component: ForgotComponent },
   { path: 'monitor', component: MonitorComponent },
+  { path: 'ambulance/:referId', component: AmbulanceComponent },
   {
     path: '', component: LayoutComponent,
     canActivate: [AuthGuardRegisterService],
@@ -40,7 +43,6 @@ const routes: Routes = [
       { path: 'listuser', component: ListuserComponent },
       { path: 'editprofile', component: AdduserComponent },
       { path: 'chatroom', component: ChatroomComponent },
-      { path: 'dicomviewer', component: DicomViewerLibComponent }
     ]
   },
   { path: '**', component: PageNotFoundComponent, pathMatch: 'full' }

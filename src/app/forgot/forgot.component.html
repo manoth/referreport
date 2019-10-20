@@ -1,0 +1,113 @@
+<div class="login-box">
+    <div class="login-logo">
+        <b>ระบบ R9Refer</b>
+        <p style="font-size: 20px;">
+            <i class="fa fa-key fa-flip-horizontal" aria-hidden="true"></i>
+            ความช่วยเหลือเกี่ยวกับการกู้คือรหัสผ่าน
+        </p>
+    </div>
+    <!-- /.login-logo -->
+    <div class="box login-box-body">
+        <div class="overlay" *ngIf="loading">
+            <i class="fa fa-refresh fa-spin"></i>
+        </div>
+        <p class="login-box-msg">
+            โปรดใส่เลขประจำตัวประชาชนของคุณ แล้วกดส่ง คุณจะได้รับรหัส OTP ที่ส่งไปยัง E-mail หรือ Line
+            ที่คุณลงทะเบียนเอาไว้
+        </p>
+
+        <form>
+            <div class="form-group has-feedback" [ngClass]="{'has-error': hasCid }">
+                <input type="text" id="cid" name="cid" [(ngModel)]="forgot.cid" class="form-control"
+                    (change)="checkCID(forgot.cid)" (blur)="checkCID(forgot.cid)" (keyup)="checkCID(forgot.cid)"
+                    placeholder="เลขประจำตัวประชาชน" autofocus>
+                <i class="fa fa-id-card form-control-feedback" aria-hidden="true"></i>
+                <span class="help-block" *ngIf="hasCid">{{errCidMessage}}</span>
+            </div>
+            <div class="row">
+                <div class="col-xs-8">
+                    <div class="checkbox icheck">
+                    </div>
+                </div>
+                <!-- /.col -->
+                <div class="col-xs-4">
+                    <button class="btn btn-primary btn-block btn-flat" (click)="sendForgot()">
+                        <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                        ส่ง
+                    </button>
+                </div>
+                <!-- /.col -->
+            </div>
+            <hr style="border: 0.5px solid darkgrey;" />
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="pull-left">
+                        <a [routerLink]="['/monitor']" target="_blank">
+                            <i class="fa fa-desktop" aria-hidden="true"></i>
+                            Monitor
+                        </a>
+                    </div>
+                    <div class="pull-right">
+                        <a [routerLink]="['/login']">
+                            <i class="fa fa-sign-in" aria-hidden="true"></i>
+                            กลับหน้า Login
+                        </a>
+                    </div>
+                </div>
+                <!-- /.col -->
+            </div>
+        </form>
+
+    </div>
+    <!-- /.login-box-body -->
+</div>
+
+<div class="modal fade" id="modal-otp">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-red">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">
+                    <i class="glyphicon glyphicon-lock"></i>
+                    กรุณากรอกรหัส OTP ที่คุณได้รับจาก E-mail หรือ Line ของคุณ
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="box-body box-profile">
+                    <img class="profile-user-img img-responsive img-circle"
+                        [src]="user?.image || './assets/img/profile-avatar.jpg'" alt="User profile picture">
+                    <h3 class="profile-username text-center">
+                        ชื่อบัญชีผู้ใช้ : {{user?.username}}
+                    </h3>
+                    <p class="text-muted">
+                        เรียนคุณ{{user?.fname}} {{user?.lname}}<br />
+                        เราได้ทำการส่งรหัส OTP ไม่ยัง Email: {{user?.email}} และ Line ส่วนตัว ของคุณแล้ว<br />
+                        OTP นับตั้งแต่ {{user?.otp_update | thaidate:'short'}}
+                        {{user?.otp_update | date:'HH:mm:ss':'utc'}} น.<br />
+                        <br />
+                    </p>
+                    <h2 class="profile-username text-center text-red">
+                        คุณมีเวลาเหลือ <b>{{otpDate.minutes}}:{{otpDate.seconds}}</b> นาที ในการใช้รหัส OTP
+                    </h2>
+                    <p>
+                        <br />
+                        <b>รหัสอ้างอิง: [{{user?.id_otp}}]</b>
+                    </p>
+                    <div class="form-group has-feedback">
+                        <input style="text-align:center;" type="text" id="otp" name="otp" [(ngModel)]="forgot.otp"
+                            class="form-control" placeholder="กรุณากรอกรหัส OTP 6 หลัก" autofocus>
+                        <i class="glyphicon glyphicon-lock form-control-feedback" aria-hidden="true"></i>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">ปิด</button>
+                <button type="button" class="btn btn-success" (click)="login()">ตกลง</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>

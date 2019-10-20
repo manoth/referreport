@@ -5,8 +5,8 @@ import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import * as io from 'socket.io-client';
 
-import 'bootstrap-notify';
-declare const $: any;
+// import 'bootstrap-notify';
+// declare const $: any;
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +26,35 @@ export class MainService {
     public http: HttpClient
   ) { }
 
-  public socket: SocketIOClient.Socket = io(this.apiUrl);
+  private socketIo: any;
+  public socket(jwtToken?: string): SocketIOClient.Socket {
+    try {
+      if (!this.socketIo || jwtToken) {
+        this.socketIo = io(this.apiUrl, { query: { jwtToken: jwtToken || localStorage.getItem(this.tokenName) } });
+        return this.socketIo;
+      } else {
+        return this.socketIo;
+      }
+    } catch (err) {
+      this.logOut();
+    }
+  }
+
+  public socketMonit(tokenName: string): SocketIOClient.Socket {
+    try {
+      return io(this.apiUrl, { query: { token: tokenName } });
+    } catch (err) {
+      this.logOut();
+    }
+  }
+
+  public status: any = [
+    { key: '0', value: 'Register' },
+    { key: '1', value: 'User' },
+    { key: '2', value: 'Admin' },
+    { key: '3', value: 'Supper Admin' },
+    { key: '4', value: 'Developer' }
+  ];
 
   get(path: string) {
     const url: string = `${this.apiUrl}/${path}`;
@@ -47,7 +75,12 @@ export class MainService {
   }
 
   logOut() {
-    this.get('logout').then(() => {
+    const socket = this.socket();
+    socket.off('connect');
+    socket.off('r9refer-username-online');
+    socket.disconnect();
+    socket.close();
+    this.get('logout').then((res: any) => {
       localStorage.removeItem(this.tokenName);
       this.router.navigate(['/login']);
     });
@@ -88,8 +121,17 @@ export class MainService {
   }
 
   public countReferIn = new EventEmitter();
-  liatReferIn() {
-    this.countReferIn.emit();
+  listReferIn(beginDate: any, endDate: any) {
+    this.countReferIn.emit({ beginDate, endDate });
+  }
+
+  public arrUser = new EventEmitter();
+  userOnline(user: any) {
+    this.arrUser.emit(user);
+  }
+  public onHospcode = new EventEmitter();
+  emitHospcode() {
+    this.onHospcode.emit();
   }
 
   // getOnlineNotify(username: any) {

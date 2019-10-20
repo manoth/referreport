@@ -1,8 +1,8 @@
-import { Component, OnInit, Inject } from '@angular/core';
-
-import { MainService } from 'src/app/services/main.service';
+import { Component, OnInit, Inject, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
+
+import { MainService } from 'src/app/services/main.service';
 declare const $: any;
 
 @Component({
@@ -12,19 +12,26 @@ declare const $: any;
 })
 export class HeaderComponent implements OnInit {
 
+  @Input() socket: any;
+  @Input() user: any;
+
   room: string = 'r9refer-chatroom-all';
   token = new Token();
-  user: any;
   dataToken: any;
   isToken: boolean = false;
   countAlert: number = 0;
   interval: any;
+  commentAlert: number = 0;
+  commentList: any;
+  dateNow: any;
 
   countReferIn: number = 0;
+  arrReferNo: any = [];
 
   constructor(
     @Inject('SYSTEMNAME') private titleName: string,
-    @Inject('REFER_TOKEN') private tokenName: string,
+    @Inject('REFER_TOKEN') private referToken: string,
+    @Inject('REFER_HOSPCODE') private hospcode: string,
     private title: Title,
     private router: Router,
     private main: MainService
@@ -32,37 +39,63 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {
     this.getNonReadChat();
+    this.getListCountRefer();
     this.getNonReadComment();
-    this.user = this.main.decodeToken();
+
     this.main.getDcodedToken.subscribe((data: any) => {
       this.user = data;
+      this.getListCountRefer();
+      this.getNonReadComment();
     });
-    this.main.countReferIn.subscribe(() => {
+    this.main.countReferIn.subscribe((objDate: any) => {
+      this.getListCountRefer(objDate);
       this.getNonReadComment();
     });
     this.main.eventOver.subscribe(() => {
       this.clearCountAlert();
     });
-    this.main.socket.off(`title-chat-${this.room}`);
-    this.main.socket.on(`title-chat-${this.room}`, (username: any) => {
+
+    this.socket.on(localStorage.getItem(this.hospcode), (refer_no: string) => {
+      this.getListCountRefer();
+      this.getNonReadComment();
+      this.main.emitHospcode();
+    });
+    this.socket.on(`title-chat-${this.room}`, (username: any) => {
       (this.user.username != username && username) ? this.titleMessage() : null;
       this.getNonReadChat();
     });
-    // this.main.socket.off('comment-username-online');
-    // this.main.socket.on('comment-username-online', (username: any) => {
-    //   // this.main.getOnlineNotify(username);
-    // });
   }
 
   getNonReadChat() {
     this.main.post('chat/nonread', { refer_no: this.room }).then((row: any) => {
-      this.countAlert = (row.data.idnonread) ? row.data.idnonread.split(',').length : 0;
+      if (row.ok) {
+        this.countAlert = (row.data.idnonread) ? row.data.idnonread.split(',').length : 0;
+      }
     });
   }
 
   getNonReadComment() {
-    this.main.post('comment/nonread', { refer_no: this.room }).then((row: any) => {
-      this.countReferIn = row.countReferIn[0].count;
+    this.main.get('comment').then((row: any) => {
+      if (row.ok) {
+        this.dateNow = row.dateNow;
+        this.commentList = row.data;
+        this.arrReferNo = (row.count[0].refer_no) ? row.count[0].refer_no.split(',') : [];
+        this.commentAlert = (row.count[0].refer_no) ? row.count[0].refer_no.split(',').length : 0;
+        if (this.commentAlert > 0) {
+          this.title.setTitle(`(${this.commentAlert}) ${this.titleName}`);
+        } else {
+          this.title.setTitle(this.titleName);
+        }
+      }
+    });
+  }
+
+  getListCountRefer(obj?: any) {
+    const objDate = (obj) ? obj : { beginDate: null, endDate: null };
+    this.main.post('refer/listcount', objDate).then((row: any) => {
+      if (row.ok) {
+        this.countReferIn = row.list.count;
+      }
     });
   }
 
@@ -81,7 +114,9 @@ export class HeaderComponent implements OnInit {
   clearCountAlert() {
     clearInterval(this.interval);
     this.interval = null;
-    this.title.setTitle(this.titleName);
+    (this.commentAlert <= 0) ?
+      this.title.setTitle(this.titleName) :
+      this.title.setTitle(`(${this.commentAlert}) ${this.titleName}`);
     if (this.router.routerState.snapshot.url == '/chatroom') {
       this.countAlert = 0;
     }
@@ -110,7 +145,7 @@ export class HeaderComponent implements OnInit {
   onSunmit() {
     this.main.post('gentoken', this.token).then((token: any) => {
       if (token.ok) {
-        localStorage.setItem(this.tokenName, token.res.refer_token);
+        localStorage.setItem(this.referToken, token.res.refer_token);
         this.dataToken = token.res.refer_token;
       }
     });
