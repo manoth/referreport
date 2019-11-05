@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 // val.year //{{visibleMonth
 import { IMyDrpOptions } from 'mydaterangepicker';
@@ -28,6 +28,7 @@ export class ReferComponent implements OnInit {
   countReferIn: number;
 
   constructor(
+    @Inject('REFER_HOSPCODE') private hospcode: string,
     private route: ActivatedRoute,
     private main: MainService
   ) {
@@ -77,7 +78,8 @@ export class ReferComponent implements OnInit {
       this.header = { path: '/' + this.path, name: 'Refer Back', icon: 'fa-retweet', ifdname: false, dname: '' }
     }
     this.main.inputHeader(this.header);
-    this.main.onHospcode.subscribe(() => {
+    this.main.socket().on(localStorage.getItem(this.hospcode), (refer: any) => {
+      // console.log(refer);
       this.getReferinList(this.beginDate, this.endDate, this.path, this.accept);
       this.getNonRead();
     });
@@ -87,7 +89,7 @@ export class ReferComponent implements OnInit {
     this.main.post('refer/listcount', { beginDate: this.beginDate, endDate: this.endDate }).then((row: any) => {
       if (row.ok) {
         this.countReferIn = row.list.count;
-        this.main.listReferIn(this.beginDate, this.endDate);
+        this.main.listReferIn(this.countReferIn);
       }
     });
   }
@@ -97,12 +99,7 @@ export class ReferComponent implements OnInit {
       this.loading = false;
       if (rows.ok) {
         this.lists = rows.datas;
-      } else {
-        this.main.logOut();
       }
-    }).catch((err: any) => {
-      console.log(err);
-      this.main.logOut();
     });
   }
 

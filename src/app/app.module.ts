@@ -9,7 +9,7 @@ import { JwtInterceptorService } from './services/jwt-interceptor.service';
 import { ErrorInterceptorService } from './services/error-interceptor.service';
 import { environment } from 'src/environments/environment';
 
-import { AgmCoreModule } from '@agm/core';
+import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
 import { AgmDirectionModule } from 'agm-direction';
 import { MyDateRangePickerModule } from 'mydaterangepicker';
 import { MyDatePickerModule } from 'mydatepicker';
@@ -21,6 +21,7 @@ import { AgePipe } from './pipes/age.pipe';
 import { FilterPipe } from './pipes/filter.pipe';
 import { Nl2BrPipe } from './pipes/nl2br.pipe';
 import { UniquePipe } from './pipes/unique.pipe';
+import { SortByPipe } from './pipes/sortby.pipe';
 
 import { DragDirective } from './directive/drag-drop.directive';
 
@@ -59,6 +60,7 @@ import { AmbulanceComponent } from './ambulance/ambulance.component';
     FilterPipe,
     Nl2BrPipe,
     UniquePipe,
+    SortByPipe,
     DragDirective,
     AppComponent,
     LoginComponent,
@@ -90,7 +92,7 @@ import { AmbulanceComponent } from './ambulance/ambulance.component';
     FormsModule,
     HttpClientModule,
     AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyDFTKbcSXEN22pUx3zfaabEOGyy7oOZtmI',
+      apiKey: 'AIzaSyB1vV_SqSgax_DloOSolMbMaV08s0vhOm0',
       language: 'th'
     }),
     AgmDirectionModule,
@@ -100,6 +102,7 @@ import { AmbulanceComponent } from './ambulance/ambulance.component';
     NgxLinkifyjsModule.forRoot()
   ],
   providers: [
+    GoogleMapsAPIWrapper,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptorService, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptorService, multi: true },
     { provide: 'apiUrl', useValue: environment.apiUrl },

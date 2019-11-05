@@ -14,13 +14,13 @@
             <div class="row">
                 <div class="col-sm-4">
                     <div class="input-group input-group-sm">
-                        <span class="input-group-addon">สถานพยาบาลปลายทาง</span>
-                        <input type="text" class="form-control" [value]="tab1?.refer_hospname" disabled>
+                        <span class="input-group-addon">สถานพยาบาลต้นทาง</span>
+                        <input type="text" class="form-control" [value]="tab1?.from_hospname" disabled>
                     </div>
                     <p></p>
                     <div class="input-group input-group-sm">
-                        <span class="input-group-addon">เลขที่ใบส่งตัว</span>
-                        <input type="text" class="form-control" [value]="tab1?.refer_no" disabled>
+                        <span class="input-group-addon">สถานพยาบาลปลายทาง</span>
+                        <input type="text" class="form-control" [value]="tab1?.refer_hospname" disabled>
                     </div>
                     <p></p>
                     <div class="input-group input-group-sm">
@@ -50,6 +50,11 @@
                 </div>
                 <div class="col-sm-4">
                     <div class="input-group input-group-sm">
+                        <span class="input-group-addon">เลขที่ใบส่งตัว</span>
+                        <input type="text" class="form-control" [value]="tab1?.refer_no" disabled>
+                    </div>
+                    <p></p>
+                    <div class="input-group input-group-sm">
                         <span class="input-group-addon">วันที่หมดอายุใบนำส่ง</span>
                         <input type="text" class="form-control" [value]="tab1?.expire_date| thaidate:'medium'" disabled>
                     </div>
@@ -75,24 +80,24 @@
                     </div>
                     <p></p>
                     <div class="input-group input-group-sm">
-                        <span class="input-group-addon">ทะเบียนรถนำส่ง</span>
-                        <input type="text" class="form-control" [value]="" disabled>
-                    </div>
-                    <p></p>
-                    <div class="input-group input-group-sm">
                         <span class="input-group-addon">แพทย์ผู้ ส่ง</span>
                         <input type="text" class="form-control" [value]="tab1?.doctor_name" disabled>
                     </div>
                 </div>
                 <div class="col-sm-4">
-                    <a data-lightbox="image" href="./assets/img/level-of-patien-acuity.png">
-                        <img class="img-responsive" src="./assets/img/level-of-patien-acuity.png" />
+                    <a class="hidden-xs" data-lightbox="image" href="./assets/img/level-of-patien-acuity.png">
+                        <img class="hidden-xs img-responsive" src="./assets/img/level-of-patien-acuity.png" />
                     </a>
                     <p></p>
                     <div class="input-group input-group-sm">
                         <span class="input-group-addon">วันเวลาที่รอรถ Refer ออกเดินรถ</span>
                         <input type="text" class="form-control"
                             value="{{tab1?.load_date | thaidate:'medium' }} {{ tab1?.load_time }}:00 น." disabled>
+                    </div>
+                    <p></p>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon">ทะเบียนรถนำส่ง</span>
+                        <input type="text" class="form-control" [value]="" disabled>
                     </div>
                 </div>
             </div>
@@ -276,15 +281,22 @@
                 </fieldset>
             </div>
         </div>
-        <div class="row" style="padding-top: 15px" *ngIf="!tab1?.reply_status && path=='referin'">
+        <div class="row" style="padding-top: 15px">
             <div class="col-sm-4">
                 <!-- <button type="button" class="btn btn-block btn-danger" (click)="doCancel()">
                     <i class="fa fa-trash" aria-hidden="true"></i>
                     ปฏิเสธ
                 </button> -->
+                <button type="button" (click)="getQuality(que.refer_no)" class="btn btn-block btn-info"
+                    data-toggle="control-sidebar" data-toggle="modal" data-target="#modal-evaluation"
+                    data-backdrop="static">
+                    <i class="fa fa-check-square-o" aria-hidden="true"></i>
+                    ประเมินคุณภาพ
+                </button>
             </div>
             <div class="col-sm-4">
-                <button type="button" class="btn btn-block btn-success" (click)="doSave()">
+                <button type="button" class="btn btn-block btn-success" (click)="doSave()"
+                    *ngIf="!tab1?.reply_status && path=='referin'">
                     <i class="fa fa-floppy-o" aria-hidden="true"></i>
                     ลงรับ
                 </button>
@@ -297,4 +309,274 @@
             </div>
         </div>
     </div>
+</div>
+
+<div class="modal fade" id="modal-evaluation">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form enctype="multipart/form-data" class="form-horizontal box">
+                <div class="modal-header bg-orange">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h2 class="modal-title">
+                        <i class="fa fa-check-square-o" aria-hidden="true"></i>
+                        การประเมินคุณภาพ
+                    </h2>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>รายการ</th>
+                                    <th>ไม่จำเป็น</th>
+                                    <th>ทำเหมาะสม</th>
+                                    <th colspan="2" style="text-align: left;">ทำไม่เหมาะสม</th>
+                                    <th>ไม่ทำ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Airway care:</td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que1" name="que1" value="1"
+                                            class="minimal-red">
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que1" name="que1" value="2"
+                                            class="minimal-red">
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que1" name="que1" value="3"
+                                            class="minimal-red">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="que.txtQue1"
+                                            name="txtQue1">
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que1" name="que1" value="0"
+                                            class="minimal-red">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Breathing/Oxygen support:</td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que2" name="que2" value="1"
+                                            class="minimal-red">
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que2" name="que2" value="2"
+                                            class="minimal-red">
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que2" name="que2" value="3"
+                                            class="minimal-red">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="que.txtQue2"
+                                            name="txtQue2">
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que2" name="que2" value="0"
+                                            class="minimal-red">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Fluid therapy/resuscitation:</td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que3" name="que3" value="1"
+                                            class="minimal-red">
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que3" name="que3" value="2"
+                                            class="minimal-red">
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que3" name="que3" value="3"
+                                            class="minimal-red">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="que.txtQue3"
+                                            name="txtQue3">
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que3" name="que3" value="0"
+                                            class="minimal-red">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Monitor EKG:</td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que4" name="que4" value="1"
+                                            class="minimal-red">
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que4" name="que4" value="2"
+                                            class="minimal-red">
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que4" name="que4" value="3"
+                                            class="minimal-red">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="que.txtQue4"
+                                            name="txtQue4">
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que4" name="que4" value="0"
+                                            class="minimal-red">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Monitor SpO2:</td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que5" name="que5" value="1"
+                                            class="minimal-red">
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que5" name="que5" value="2"
+                                            class="minimal-red">
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que5" name="que5" value="3"
+                                            class="minimal-red">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="que.txtQue5"
+                                            name="txtQue5">
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que5" name="que5" value="0"
+                                            class="minimal-red">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Bleeding control:</td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que6" name="que6" value="1"
+                                            class="minimal-red">
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que6" name="que6" value="2"
+                                            class="minimal-red">
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que6" name="que6" value="3"
+                                            class="minimal-red">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="que.txtQue6"
+                                            name="txtQue6">
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que6" name="que6" value="0"
+                                            class="minimal-red">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Spine immobilization:</td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que7" name="que7" value="1"
+                                            class="minimal-red">
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que7" name="que7" value="2"
+                                            class="minimal-red">
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que7" name="que7" value="3"
+                                            class="minimal-red">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="que.txtQue7"
+                                            name="txtQue7">
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que7" name="que7" value="0"
+                                            class="minimal-red">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Extremities splint:</td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que8" name="que8" value="1"
+                                            class="minimal-red">
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que8" name="que8" value="2"
+                                            class="minimal-red">
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que8" name="que8" value="3"
+                                            class="minimal-red">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="que.txtQue8"
+                                            name="txtQue8">
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que8" name="que8" value="0"
+                                            class="minimal-red">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Pelvic splint:</td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que9" name="que9" value="1"
+                                            class="minimal-red">
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que9" name="que9" value="2"
+                                            class="minimal-red">
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que9" name="que9" value="3"
+                                            class="minimal-red">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="que.txtQue9"
+                                            name="txtQue9">
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="radio" [(ngModel)]="que.que9" name="que9" value="0"
+                                            class="minimal-red">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <fieldset>
+                                <legend>ปัญหาและการส่งต่อ</legend>
+                                <textarea class="form-control" rows="5" name="issue" [(ngModel)]="que.issue"></textarea>
+                            </fieldset>
+                        </div>
+                        <div class="col-sm-6">
+                            <fieldset>
+                                <legend>แนวทางแก้ไข</legend>
+                                <textarea class="form-control" rows="5" name="solutions"
+                                    [(ngModel)]="que.solutions"></textarea>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">
+                        <i class="fa fa-times-circle" aria-hidden="true"></i>
+                        Close
+                    </button>
+                    <button type="submit" (click)="doSaveQuality()" class="btn btn-info pull-right"
+                        *ngIf="path=='referin'">
+                        <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                        Save
+                    </button>
+                </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
 </div>

@@ -12,4 +12,8 @@ export class Tab0Component implements OnInit {
   ngOnInit() {
   }
 
+  print() {
+    window.print();
+  }
+
 }

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { MainService } from 'src/app/services/main.service';
 import { CryptoService } from 'src/app/services/crypto.service';
 import Swal from 'sweetalert2';
@@ -27,6 +28,7 @@ export class ListuserComponent implements OnInit {
   }
 
   constructor(
+    private router: Router,
     private main: MainService,
     private crypto: CryptoService
   ) { }
@@ -36,6 +38,7 @@ export class ListuserComponent implements OnInit {
     this.getListuser();
     this.decoded = this.main.decodeToken();
     this.changwat = this.decoded.provcode;
+    (this.decoded.status > 1) || this.router.navigate(['/referin']);
     // this.search = (this.decoded.status == '2') ? this.decoded.hospname : '';
   }
 
@@ -103,7 +106,7 @@ export class ListuserComponent implements OnInit {
     this.main.post('adduser', { data: data, edit: true }).then((row: any) => {
       let status = (active) ? '"On"' : '"Off"';
       let icon = (active) ? '<i class="fa fa-check-circle-o" aria-hidden="true"></i>' : '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>';
-      $.notify(icon + ' เปลี่ยนสถานะการใข้งานของ "' + username + '" เป็น ' + status + ' เรียบน้อยแล้ว!', {
+      $.notify(icon + ' เปลี่ยนสถานะการใข้งานของ "' + username + '" เป็น ' + status + ' เรียบร้อยแล้ว!', {
         type: (active) ? 'info' : 'danger'
       });
     });

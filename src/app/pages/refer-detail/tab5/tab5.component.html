@@ -112,14 +112,14 @@
                 </h3>
                 <div class="box-tools">
                     <span class="badge bg-red">
-                        Online {{ (userOnline)?userOnline.length:0 }} คน
+                        Online {{ (userOnline)?onlineCustom(userOnline).length:0 }} คน
                     </span>
                 </div>
             </div>
             <div class="box-body">
                 <div style="overflow: scroll; height:512px;">
                     <ul class="products-list product-list-in-box" *ngIf="userOnline">
-                        <li class="item" *ngFor="let user of onlineCustom(userOnline) | unique:'username'">
+                        <li class="item" *ngFor="let user of onlineCustom(userOnline).reverse() | unique:'username'">
                             <div class="product-img">
                                 <img class="img-circle img-bordered-sm-online"
                                     [src]="user?.image || './assets/img/profile-avatar-user-'+user?.sex+'.png'"

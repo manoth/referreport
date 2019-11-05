@@ -36,7 +36,8 @@ export class MainService {
         return this.socketIo;
       }
     } catch (err) {
-      this.logOut();
+      console.log(err);
+      // this.logOut();
     }
   }
 
@@ -44,7 +45,7 @@ export class MainService {
     try {
       return io(this.apiUrl, { query: { token: tokenName } });
     } catch (err) {
-      this.logOut();
+      console.log(err);
     }
   }
 
@@ -121,17 +122,13 @@ export class MainService {
   }
 
   public countReferIn = new EventEmitter();
-  listReferIn(beginDate: any, endDate: any) {
-    this.countReferIn.emit({ beginDate, endDate });
+  listReferIn(countReferIn: any) {
+    this.countReferIn.emit(countReferIn);
   }
 
   public arrUser = new EventEmitter();
   userOnline(user: any) {
     this.arrUser.emit(user);
-  }
-  public onHospcode = new EventEmitter();
-  emitHospcode() {
-    this.onHospcode.emit();
   }
 
   // getOnlineNotify(username: any) {

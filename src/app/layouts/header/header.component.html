@@ -95,7 +95,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                             <i class="fa fa-bell-o" aria-hidden="true"></i>
                             <span class="label label-danger" *ngIf="commentAlert>0">
-                                {{ commentAlert }}
+                                {{ (commentAlert>99)?'99+':commentAlert }}
                             </span>
                         </a>
                         <ul class="dropdown-menu">
@@ -139,7 +139,7 @@
                                                 [ngClass]="(main.in_array(c.refer_no,arrReferNo))?'fa-paper-plane text-maroon':'fa-paper-plane-o'"></i>
                                             &nbsp;&nbsp;
                                             <i class="fa fa-clock-o"></i>
-                                            {{ c.d_update | timeAgo:dateNow }}
+                                            {{ c.d_update | timeAgo }}
                                             &nbsp;&nbsp;
                                             <i class="fa"
                                                 [ngClass]="(main.in_array(c.refer_no,arrReferNo))?'fa-envelope text-maroon':'fa-envelope-open-o'"></i>
@@ -230,15 +230,15 @@
                 </div>
                 <div class="modal-body" *ngIf="isToken">
                     <div class="form-group">
-                        <label class="col-sm-2 col-md-2 control-label">หน่วยงาน: </label>
-                        <div class="col-sm-10 col-md-10">
+                        <label class="col-sm-3 col-md-3 control-label">ชื่อหน่วยงาน: </label>
+                        <div class="col-sm-9 col-md-9">
                             <input type="text" class="form-control" [(ngModel)]="user.hospname" name="hospname"
                                 readonly>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 col-md-2 control-label">Token: </label>
-                        <div class="col-sm-10 col-md-10">
+                        <label class="col-sm-3 col-md-3 control-label">R9Refer Token: </label>
+                        <div class="col-sm-9 col-md-9">
                             <div class="input-group">
                                 <span class="input-group-btn">
                                     <button (click)="genNewToken()" type="button" class="btn btn-info btn-flat">
@@ -257,13 +257,13 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 col-md-2 control-label">Line In: </label>
-                        <div class="col-sm-10 col-md-10">
+                        <label class="col-sm-3 col-md-3 control-label">เดินทางเอง Line In: </label>
+                        <div class="col-sm-9 col-md-9">
                             <div class="input-group">
-                                <input type="text" class="form-control" [(ngModel)]="token.line_token_in"
-                                    name="line_token_in" id="line_token_in" required>
+                                <input type="text" class="form-control" [(ngModel)]="token.line_token_walk_in"
+                                    name="line_token_walk_in" id="line_token_walk_in" required>
                                 <span class="input-group-btn">
-                                    <button (click)="onCopy('line_token_in')" type="button"
+                                    <button (click)="onCopy('line_token_walk_in')" type="button"
                                         class="btn btn-default btn-flat">
                                         <i class="fa fa-files-o" aria-hidden="true"></i>
                                     </button>
@@ -272,13 +272,13 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 col-md-2 control-label">Line Out: </label>
-                        <div class="col-sm-10 col-md-10">
+                        <label class="col-sm-3 col-md-3 control-label">เดินทางเอง Line Out: </label>
+                        <div class="col-sm-9 col-md-9">
                             <div class="input-group">
-                                <input type="text" class="form-control" [(ngModel)]="token.line_token_out"
-                                    name="line_token_out" id="line_token_out" required>
+                                <input type="text" class="form-control" [(ngModel)]="token.line_token_walk_out"
+                                    name="line_token_walk_out" id="line_token_walk_out" required>
                                 <span class="input-group-btn">
-                                    <button (click)="onCopy('line_token_out')" type="button"
+                                    <button (click)="onCopy('line_token_walk_out')" type="button"
                                         class="btn btn-default btn-flat">
                                         <i class="fa fa-files-o" aria-hidden="true"></i>
                                     </button>
@@ -287,8 +287,8 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 col-md-2 control-label">Load In: </label>
-                        <div class="col-sm-10 col-md-10">
+                        <label class="col-sm-3 col-md-3 control-label">รถ Refer Line In: </label>
+                        <div class="col-sm-9 col-md-9">
                             <div class="input-group">
                                 <input type="text" class="form-control" [(ngModel)]="token.line_token_loads_in"
                                     name="line_token_loads_in" id="line_token_loads_in" required>
@@ -302,13 +302,43 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 col-md-2 control-label">Load Out: </label>
-                        <div class="col-sm-10 col-md-10">
+                        <label class="col-sm-3 col-md-3 control-label">รถ Refer Line Out: </label>
+                        <div class="col-sm-9 col-md-9">
                             <div class="input-group">
                                 <input type="text" class="form-control" [(ngModel)]="token.line_token_loads_out"
                                     name="line_token_loads_out" id="line_token_loads_out" required>
                                 <span class="input-group-btn">
                                     <button (click)="onCopy('line_token_loads_out')" type="button"
+                                        class="btn btn-default btn-flat">
+                                        <i class="fa fa-files-o" aria-hidden="true"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 col-md-3 control-label">ทั้งหมด Line In: </label>
+                        <div class="col-sm-9 col-md-9">
+                            <div class="input-group">
+                                <input type="text" class="form-control" [(ngModel)]="token.line_token_in"
+                                    name="line_token_in" id="line_token_in" required>
+                                <span class="input-group-btn">
+                                    <button (click)="onCopy('line_token_in')" type="button"
+                                        class="btn btn-default btn-flat">
+                                        <i class="fa fa-files-o" aria-hidden="true"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 col-md-3 control-label">ทั้งหมด Line Out: </label>
+                        <div class="col-sm-9 col-md-9">
+                            <div class="input-group">
+                                <input type="text" class="form-control" [(ngModel)]="token.line_token_out"
+                                    name="line_token_out" id="line_token_out" required>
+                                <span class="input-group-btn">
+                                    <button (click)="onCopy('line_token_out')" type="button"
                                         class="btn btn-default btn-flat">
                                         <i class="fa fa-files-o" aria-hidden="true"></i>
                                     </button>

@@ -41,7 +41,6 @@ export class MonitorComponent implements OnInit {
       await this.switchColor(refer_no);
     });
     socket.on('refer-monitor-reload', (reload) => {
-      console.log(reload);
       window.location.reload(true);
     });
   }

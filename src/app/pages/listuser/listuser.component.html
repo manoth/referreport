@@ -1,4 +1,4 @@
-<section class="content">
+<section class="content" *ngIf="decoded?.status>1">
     <div class="box box-primary box-solid">
         <div class="overlay" *ngIf="userLoading">
             <i class="fa fa-refresh fa-spin"></i>

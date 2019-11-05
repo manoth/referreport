@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { MainService } from 'src/app/services/main.service';
 
@@ -9,6 +9,9 @@ import { MainService } from 'src/app/services/main.service';
 })
 export class ChatroomComponent implements OnInit {
 
+  @ViewChild('scrollMe', { static: false }) scrollMe: any;
+  // @ViewChild('localVideo', { static: false }) localVideo: ElementRef;
+
   room: string = 'r9refer-chatroom-all';
   liading: boolean = true;
   arrUser: Array<any>;
@@ -18,6 +21,7 @@ export class ChatroomComponent implements OnInit {
   messenger: any;
   message: string;
   decoded: any;
+
 
   constructor(
     private router: Router,
@@ -33,8 +37,21 @@ export class ChatroomComponent implements OnInit {
     this.decoded = this.main.decodeToken();
     this.main.inputHeader({ path: '/chatroom', name: 'Online Chat', subname: 'R9refer', icon: 'fa-comments', ifdname: false, dname: '' });
     this.main.arrUser.subscribe((user: any) => {
-      if (!this.main.in_array(user.username, this.arrUser) || !user.on) {
-        this.getOnline();
+      if (!this.main.in_array(user.username.username, this.arrUser) && this.userOnline) {
+        this.arrUser.push(user.username.username);
+        this.userOnline.push(user.username);
+      }
+      if (!user.on) {
+        let arrUser = this.arrUser;
+        let userOnline = this.userOnline;
+        this.arrUser = [];
+        this.userOnline = [];
+        for (let i = 0; i < arrUser.length; i++) {
+          if (arrUser[i] != user.username.username) {
+            this.arrUser.push(arrUser[i]);
+            this.userOnline.push(userOnline[i]);
+          }
+        }
       }
     });
     this.main.eventOver.subscribe(() => {
@@ -42,9 +59,24 @@ export class ChatroomComponent implements OnInit {
         this.onOverRead();
       }
     });
-    this.main.socket().on('chat-' + this.room, (read: boolean) => {
-      this.getMessage(read);
+    this.main.socket().on('new-chat-' + this.room, (msg: any) => {
+      this.liading = false;
+      if (!msg.type) {
+        if (this.decoded.username != msg.msg.username) {
+          this.idNonRead = (this.idNonRead) ? this.idNonRead + ',' + msg.msg.id : msg.msg.id.toString();
+        }
+        this.messenger.unshift(msg.msg);
+      } else {
+        this.getMessage(msg.type);
+      }
     });
+
+    // navigator.mediaDevices.getUserMedia({
+    //   audio: true,
+    //   video: true
+    // }).then(stream => this.localVideo.nativeElement.srcObject = stream).catch(function (e) {
+    //   alert('getUserMedia() error: ' + e.name);
+    // });
   }
 
   getOnline() {

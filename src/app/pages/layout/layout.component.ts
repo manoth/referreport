@@ -20,8 +20,7 @@ export class LayoutComponent implements OnInit {
     document.body.className = 'hold-transition skin-green layout-top-nav fixed';
     this.user = this.main.decodeToken();
     this.socket = this.main.socket(localStorage.getItem(this.tokenName));
-    this.socket.on('r9refer-username-online', (user: any) => {
-      // console.log(user);
+    this.socket.on('r9refer-username-online-new', (user: any) => {
       this.main.userOnline(user);
       if (user.username == this.user.username && !user.on) {
         this.main.socket(localStorage.getItem(this.tokenName));

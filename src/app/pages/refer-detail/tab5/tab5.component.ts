@@ -1,7 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter, Inject } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, Inject, ViewChild } from '@angular/core';
 import { MainService } from 'src/app/services/main.service';
 
-declare const $: any;
 @Component({
   selector: 'app-tab5',
   templateUrl: './tab5.component.html',
@@ -9,8 +8,10 @@ declare const $: any;
 })
 export class Tab5Component implements OnInit {
 
+  @ViewChild('scrollMe', { static: false }) scrollMe: any;
+
   idNonRead: any;
-  idNonReadUser: any;
+  // idNonReadUser: any;
   liading: boolean = true;
 
   @Input() referNo: string;
@@ -29,8 +30,16 @@ export class Tab5Component implements OnInit {
 
   ngOnChanges(): void {
     this.onOverRead();
-    this.socket.on('comment-' + this.referNo, (read: boolean) => {
-      this.getMessage(read);
+    this.main.socket().on('new-comment-' + this.referNo, (msg: any) => {
+      this.liading = false;
+      if (!msg.type) {
+        if (this.decoded.username != msg.msg.username) {
+          this.idNonRead = (this.idNonRead) ? this.idNonRead + ',' + msg.msg.id : msg.msg.id.toString();
+        }
+        this.messenger.unshift(msg.msg);
+      } else {
+        this.getMessage(msg.type);
+      }
     });
     this.getMessage(false);
   }
@@ -41,8 +50,21 @@ export class Tab5Component implements OnInit {
 
   ngOnInit() {
     this.main.arrUser.subscribe((user: any) => {
-      if (!this.main.in_array(user.username, this.arrUser) || !user.on) {
-        this.getOnline();
+      if (!this.main.in_array(user.username.username, this.arrUser) && this.userOnline) {
+        this.arrUser.push(user.username.username);
+        this.userOnline.push(user.username);
+      }
+      if (!user.on) {
+        let arrUser = this.arrUser;
+        let userOnline = this.userOnline;
+        this.arrUser = [];
+        this.userOnline = [];
+        for (let i = 0; i < arrUser.length; i++) {
+          if (arrUser[i] != user.username.username) {
+            this.arrUser.push(arrUser[i]);
+            this.userOnline.push(userOnline[i]);
+          }
+        }
       }
     });
     this.decoded = this.main.decodeToken();
@@ -66,7 +88,6 @@ export class Tab5Component implements OnInit {
       if (rows.ok) {
         this.distination = rows.distination[0].hospcode;
         this.idNonRead = rows.idnonread[0].idnonread;
-        this.idNonReadUser = rows.idnonreaduser[0].idnonreaduser;
         if (!read) {
           this.messenger = rows.data;
         } else {
@@ -153,14 +174,13 @@ export class Tab5Component implements OnInit {
 
   @Output() overRead: EventEmitter<any> = new EventEmitter();
   onOverRead() {
-    if (this.idNonReadUser) {
+    if (this.idNonRead) {
       let data: any = {
         refer_no: this.referNo,
-        arrId: this.idNonReadUser.split(','),
+        arrId: this.idNonRead.split(','),
         distination: this.distination
       }
       this.idNonRead = false;
-      this.idNonReadUser = false;
       this.main.post('comment/read', data).then((res: any) => {
         this.overRead.emit();
       });

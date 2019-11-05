@@ -11,11 +11,11 @@ export class TimeAgoPipe implements PipeTransform, OnDestroy {
         private changeDetectorRef: ChangeDetectorRef,
         private ngZone: NgZone
     ) { }
-    transform(value: any, dateNow?: any): any {
+    transform(value: any): any {
         this.removeTimer();
         let d = new Date(value);
-        let now = (dateNow) ? new Date(dateNow) : new Date();
-        let seconds = Math.round(Math.abs((now.getTime() / 1000) - (d.getTime() / 1000)));
+        let now = new Date();
+        let seconds = Math.round(Math.abs(((now.getTime() + (1000 * 60 * 60 * 7)) - d.getTime()) / 1000));
         let timeToUpdate = this.getSecondsUntilUpdate(seconds) * 1000;
         this.timer = this.ngZone.runOutsideAngular(() => {
             if (typeof window !== 'undefined') {

@@ -1,3 +1,4 @@
+<!-- <video style="width: 300px;" #localVideo playsinline autoplay muted></video> -->
 <section class="content">
     <div class="box box-default">
         <!-- <div class="box-header with-border">
@@ -129,14 +130,15 @@
                             </h3>
                             <div class="box-tools">
                                 <span class="pull-right badge bg-blue">
-                                    Online {{ (userOnline)?userOnline.length:0 }} คน
+                                    Online {{ (userOnline)?onlineCustom(userOnline).length:0 }} คน
                                 </span>
                             </div>
                         </div>
                         <div class="box-body">
                             <div style="overflow: scroll; height:565px;">
                                 <ul class="products-list product-list-in-box" *ngIf="userOnline">
-                                    <li class="item" *ngFor="let user of onlineCustom(userOnline) | unique:'username'">
+                                    <li class="item"
+                                        *ngFor="let user of onlineCustom(userOnline).reverse() | unique:'username'">
                                         <div class="product-img">
                                             <img class="img-circle img-bordered-sm-online"
                                                 [src]="user.image || './assets/img/profile-avatar-user-'+user.sex+'.png'"

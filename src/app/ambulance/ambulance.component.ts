@@ -41,7 +41,6 @@ export class AmbulanceComponent implements OnInit, OnDestroy {
   }
 
   getLocations() {
-    const positionOption = { maximumAge: 1500000, timeout: 0 };
     const gpsFailed = () => { this.dir = null; };
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position => {
@@ -49,7 +48,7 @@ export class AmbulanceComponent implements OnInit, OnDestroy {
         const data = { refer_no: this.referId, lat: position.coords.latitude, lng: position.coords.longitude };
         this.getDir(origin);
         // this.main.post('ambulance/setlocation', data).then();
-      }), gpsFailed, positionOption);
+      }), gpsFailed, { enableHighAccuracy: true, timeout: 60000, maximumAge: 0 });
     }
   }
 

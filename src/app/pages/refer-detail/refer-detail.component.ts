@@ -72,8 +72,8 @@ export class ReferDetailComponent implements OnInit {
           this.header.dname = this.detail.pname + this.detail.fname + ' ' + this.detail.lname;
           this.main.inputHeader(this.header);
           this.getNonRead();
-          this.socket.on(`comment-${this.detail.refer_no}`, (read: boolean) => {
-            this.getNonRead();
+          this.socket.on(`new-comment-${this.detail.refer_no}`, (msg: any) => {
+            (!msg.type) ? this.countAlert += 1 : this.countAlert = 0;
           });
         } else {
           this.router.navigate(['/' + this.path]);

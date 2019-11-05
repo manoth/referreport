@@ -3,7 +3,9 @@
         <h3 class="box-title">ข้อมูลผู้ป่วยส่งต่อ</h3>
 
         <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+            <button (click)="print()" type="button" class="btn btn-box-tool">
+                <i class="fa fa-print" aria-hidden="true"></i>
+            </button>
         </div>
         <!-- /.box-tools -->
     </div>
@@ -45,41 +47,30 @@
                         <input type="text" class="form-control" [value]="detail?.hn" disabled>
                     </div>
                 </div>
-                <div class="col-sm-2">
-                    <div class="input-group input-group-sm">
-                        <span class="input-group-addon">คำนำหน้า</span>
-                        <input type="text" class="form-control" [value]="detail?.pname" disabled>
-                    </div>
-                </div>
                 <div class="col-sm-4">
                     <div class="input-group input-group-sm">
-                        <span class="input-group-addon">ชื่อ</span>
-                        <input type="text" class="form-control" [value]="detail?.fname" disabled>
+                        <span class="input-group-addon">ชื่อ-สกุล</span>
+                        <input type="text" class="form-control" [value]="detail?.pname+detail?.fname+' '+detail?.lname"
+                            disabled>
                     </div>
                 </div>
-                <div class="col-sm-4">
-                    <div class="input-group input-group-sm">
-                        <span class="input-group-addon">นามสกุล</span>
-                        <input type="text" class="form-control" [value]="detail?.lname" disabled>
-                    </div>
-                </div>
-            </div>
-            <p></p>
-            <div class="row">
-                <div class="col-sm-4">
+                <div class="col-sm-6">
                     <div class="input-group input-group-sm">
                         <span class="input-group-addon">วัน-เดือน-ปีเกิด (อายุ)</span>
                         <input type="text" class="form-control"
                             value="{{ detail?.age | thaidate:'medium' }} ({{ detail?.age | age }})" disabled>
                     </div>
                 </div>
+            </div>
+            <p></p>
+            <div class="row">
                 <div class="col-sm-2">
                     <div class="input-group input-group-sm">
                         <span class="input-group-addon">เพศ</span>
                         <input type="text" class="form-control" [value]="detail?.sex" disabled>
                     </div>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-10">
                     <div class="input-group input-group-sm">
                         <span class="input-group-addon">ที่อยู่</span>
                         <input type="text" class="form-control"

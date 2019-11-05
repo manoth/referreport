@@ -23,7 +23,6 @@ export class HeaderComponent implements OnInit {
   interval: any;
   commentAlert: number = 0;
   commentList: any;
-  dateNow: any;
 
   countReferIn: number = 0;
   arrReferNo: any = [];
@@ -42,27 +41,31 @@ export class HeaderComponent implements OnInit {
     this.getListCountRefer();
     this.getNonReadComment();
 
+    this.main.eventOver.subscribe(() => {
+      this.clearCountAlert();
+    });
     this.main.getDcodedToken.subscribe((data: any) => {
       this.user = data;
       this.getListCountRefer();
       this.getNonReadComment();
     });
-    this.main.countReferIn.subscribe((objDate: any) => {
-      this.getListCountRefer(objDate);
-      this.getNonReadComment();
-    });
-    this.main.eventOver.subscribe(() => {
-      this.clearCountAlert();
+    this.main.countReferIn.subscribe((countReferIn: any) => {
+      this.countReferIn = countReferIn;
     });
 
-    this.socket.on(localStorage.getItem(this.hospcode), (refer_no: string) => {
-      this.getListCountRefer();
-      this.getNonReadComment();
-      this.main.emitHospcode();
+    this.socket.on('title-comment-' + localStorage.getItem(this.hospcode), (row: any) => {
+      if (row && this.user.username != row.username) {
+        this.nonReadComment(row);
+        const audio = new Audio('./assets/sound/beyond-doubt.mp3');
+        audio.play();
+      } else {
+        this.arrReferNo = [];
+        this.commentAlert = 0;
+        this.title.setTitle(this.titleName);
+      }
     });
     this.socket.on(`title-chat-${this.room}`, (username: any) => {
-      (this.user.username != username && username) ? this.titleMessage() : null;
-      this.getNonReadChat();
+      (username && this.user.username != username) ? this.titleMessage() : this.countAlert = 0;
     });
   }
 
@@ -77,17 +80,20 @@ export class HeaderComponent implements OnInit {
   getNonReadComment() {
     this.main.get('comment').then((row: any) => {
       if (row.ok) {
-        this.dateNow = row.dateNow;
-        this.commentList = row.data;
-        this.arrReferNo = (row.count[0].refer_no) ? row.count[0].refer_no.split(',') : [];
-        this.commentAlert = (row.count[0].refer_no) ? row.count[0].refer_no.split(',').length : 0;
-        if (this.commentAlert > 0) {
-          this.title.setTitle(`(${this.commentAlert}) ${this.titleName}`);
-        } else {
-          this.title.setTitle(this.titleName);
-        }
+        this.nonReadComment(row);
       }
     });
+  }
+
+  nonReadComment(row: any) {
+    this.commentList = row.data;
+    this.arrReferNo = (row.count[0].refer_no) ? row.count[0].refer_no.split(',') : [];
+    this.commentAlert = (row.count[0].refer_no) ? row.count[0].refer_no.split(',').length : 0;
+    if (this.commentAlert > 0) {
+      this.title.setTitle(`(${this.commentAlert}) ${this.titleName}`);
+    } else {
+      this.title.setTitle(this.titleName);
+    }
   }
 
   getListCountRefer(obj?: any) {
@@ -100,6 +106,9 @@ export class HeaderComponent implements OnInit {
   }
 
   titleMessage() {
+    this.countAlert += 1;
+    const audio = new Audio('./assets/sound/notify.mp3');
+    audio.play();
     if (!this.interval) {
       this.interval = setInterval(() => {
         if (this.title.getTitle() == this.titleName) {
@@ -136,6 +145,8 @@ export class HeaderComponent implements OnInit {
         this.token.line_token_out = row.data[0].line_token_out;
         this.token.line_token_loads_in = row.data[0].line_token_loads_in;
         this.token.line_token_loads_out = row.data[0].line_token_loads_out;
+        this.token.line_token_walk_in = row.data[0].line_token_walk_in;
+        this.token.line_token_walk_out = row.data[0].line_token_walk_out;
       } else {
         this.onSunmit();
       }
@@ -175,5 +186,6 @@ export class Token {
   line_token_out: string;
   line_token_loads_in: string;
   line_token_loads_out: string;
-
+  line_token_walk_in: string;
+  line_token_walk_out: string;
 }
