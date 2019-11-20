@@ -66,7 +66,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-red">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button (click)="clearDateCount()" type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">
                     <i class="glyphicon glyphicon-lock"></i>
@@ -103,7 +103,8 @@
                 <!-- /.box-body -->
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">ปิด</button>
+                <button type="button" class="btn btn-default pull-left" (click)="clearDateCount()"
+                    data-dismiss="modal">ปิด</button>
                 <button type="button" class="btn btn-success" (click)="login()">ตกลง</button>
             </div>
         </div>

@@ -18,7 +18,7 @@ export class ChatroomComponent implements OnInit {
   idNonRead: any;
 
   userOnline: any;
-  messenger: any;
+  messenger: any = [];
   message: string;
   decoded: any;
 

@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Location } from '@angular/common';
 import { MainService } from 'src/app/services/main.service';
 import Swal from 'sweetalert2';
 
@@ -13,9 +12,11 @@ export class ReferListComponent implements OnInit {
   @Input() lists?: any;
   @Input() path?: string;
   @Input() search?: string;
+  @Input() clinic?: string;
+  @Input() loads?: string;
   @Output() tokenNo: EventEmitter<any> = new EventEmitter();
+
   constructor(
-    private loc: Location,
     private main: MainService
   ) { }
 

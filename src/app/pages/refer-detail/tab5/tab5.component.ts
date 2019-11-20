@@ -11,15 +11,16 @@ export class Tab5Component implements OnInit {
   @ViewChild('scrollMe', { static: false }) scrollMe: any;
 
   idNonRead: any;
-  // idNonReadUser: any;
   liading: boolean = true;
 
+  @Input() detail: any;
   @Input() referNo: string;
   @Input() toDiscussion: any;
   @Input() socket: any;
+  arrHospcode: Array<any> = [];
   arrUser: Array<any>;
   userOnline: any;
-  messenger: any;
+  messenger: any = [];
   message: string;
   decoded: any;
   distination: string;
@@ -72,6 +73,7 @@ export class Tab5Component implements OnInit {
 
   getOnline() {
     this.arrUser = [];
+    this.arrHospcode = [this.detail.from_hospcode, this.detail.refer_hospcode];
     this.main.post('chat/useronline', {}).then((rows: any) => {
       if (rows.ok) {
         this.userOnline = rows.data;
@@ -198,7 +200,7 @@ export class Tab5Component implements OnInit {
   onlineCustom(userOnline: any) {
     let arrUser = [];
     for (let i = 0; i < userOnline.length; i++) {
-      if (userOnline[i].status != '0') {
+      if (userOnline[i].status != '0' && this.main.in_array(userOnline[i].hospcode, this.arrHospcode)) {
         arrUser.push(userOnline[i]);
       }
     }

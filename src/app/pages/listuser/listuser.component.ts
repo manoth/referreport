@@ -68,7 +68,7 @@ export class ListuserComponent implements OnInit {
       allowOutsideClick: false
     }).then((result) => {
       if (result.value) {
-        this.main.post('adduser/del', { cid, username, hospcode: this.decoded }).then((rows: any) => {
+        this.main.post('adduser/del', { cid, username, hospcode: this.decoded.hospcode }).then((rows: any) => {
           if (rows.ok) {
             Swal.fire({
               position: 'top-end',

@@ -37,8 +37,8 @@
                 <app-tab4 *ngIf="loading" [tab4]="lab"></app-tab4>
             </div>
             <div class="tab-pane" id="comment" [class.active]="tabId=='comment'">
-                <app-tab5 *ngIf="loading" [socket]="socket" [referNo]="detail?.refer_no" [toDiscussion]="toDiscussion"
-                    (overRead)="countAlert=0">
+                <app-tab5 *ngIf="loading" [detail]="detail" [socket]="socket" [referNo]="detail?.refer_no"
+                    [toDiscussion]="toDiscussion" (overRead)="countAlert=0">
                 </app-tab5>
             </div>
             <div class="tab-pane" id="maps" [class.active]="tabId=='maps'">

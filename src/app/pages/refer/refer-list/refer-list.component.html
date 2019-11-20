@@ -9,6 +9,7 @@
                 <th>ชื่อ-สกุล</th>
                 <th>วันที่ส่งต่อ</th>
                 <th>เวลาส่งต่อ</th>
+                <th>ผู้ป่วยแผนก</th>
                 <th>สถานะ</th>
                 <th>การเดินทาง</th>
                 <th>สถานะการส่ง</th>
@@ -19,7 +20,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let l of lists | filter: {
+            <tr *ngFor="let l of lists | filter: { clinicgroup: clinic } | filter: { loads_name: loads } | filter: {
                                         refer_no: search,
                                         from_hospname: search,
                                         refer_hospname: search,
@@ -36,6 +37,7 @@
                 <td>{{l.pname}}{{l.fname}} {{l.lname}}</td>
                 <td>{{l.refer_date | thaidate:'short'}}</td>
                 <td>{{l.load_time || l.refer_time}}</td>
+                <td>{{l.ClinicGroup_name}}</td>
                 <td>
                     <span class="badge" [ngClass]="{
                         'bg-red': l.level_acute=='01',

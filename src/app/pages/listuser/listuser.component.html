@@ -24,18 +24,18 @@
             <div class="box-body">
                 <div class="box-body table-responsive no-padding">
                     <form class="form-horizontal" *ngIf="decoded.status>='3'">
-                        <div class="col-ms-3 col-md-3 form-group" *ngIf="decoded.status>='4'">
+                        <div class="col-sm-3 col-md-3 form-group" *ngIf="decoded.status>='4'">
                             <select (change)="hospital=''" [(ngModel)]="changwat" name="changwat" id="changwat"
-                                class="col-ms-3 col-md-3 form-control" style="width: 220px;">
+                                class="col-sm-3 col-md-3 form-control" style="width: 220px;">
                                 <option value="">ทั้งหมด</option>
                                 <option *ngFor="let l of list | unique:'provcode'" [value]="l?.provcode">
                                     {{ l?.changwatname }}
                                 </option>
                             </select>
                         </div>
-                        <div class="col-ms-3 col-md-3 form-group">
+                        <div class="col-sm-3 col-md-3 form-group">
                             <select [(ngModel)]="hospital" name="hospital" id="hospital"
-                                class="col-ms-3 col-md-3 form-control" style="width: 220px;">
+                                class="col-sm-3 col-md-3 form-control" style="width: 220px;">
                                 <option value="">ทั้งหมด</option>
                                 <option *ngFor="let l of list | filter:{provcode: changwat} | unique:'hospname'"
                                     [value]="l?.hospname">

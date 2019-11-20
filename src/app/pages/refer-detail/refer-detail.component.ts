@@ -25,6 +25,7 @@ export class ReferDetailComponent implements OnInit {
   toMaps: any;
 
   socket: any;
+  decoded: any;
 
   constructor(
     @Inject('REFER_TOKEN') private token: string,
@@ -35,6 +36,7 @@ export class ReferDetailComponent implements OnInit {
   ) {
     this.path = this.route.snapshot.url[0].path;
     this.socket = this.main.socket();
+    this.decoded = this.main.decodeToken();
   }
 
   ngOnInit() {
@@ -73,7 +75,7 @@ export class ReferDetailComponent implements OnInit {
           this.main.inputHeader(this.header);
           this.getNonRead();
           this.socket.on(`new-comment-${this.detail.refer_no}`, (msg: any) => {
-            (!msg.type) ? this.countAlert += 1 : this.countAlert = 0;
+            (!msg.type && msg.username != this.decoded.username) ? this.countAlert += 1 : this.countAlert = 0;
           });
         } else {
           this.router.navigate(['/' + this.path]);

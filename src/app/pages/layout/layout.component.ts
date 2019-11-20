@@ -22,7 +22,7 @@ export class LayoutComponent implements OnInit {
     this.socket = this.main.socket(localStorage.getItem(this.tokenName));
     this.socket.on('r9refer-username-online-new', (user: any) => {
       this.main.userOnline(user);
-      if (user.username == this.user.username && !user.on) {
+      if (user.username.username == this.user.username && !user.on) {
         this.main.socket(localStorage.getItem(this.tokenName));
       }
     });

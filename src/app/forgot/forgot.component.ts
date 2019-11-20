@@ -121,6 +121,10 @@ export class ForgotComponent implements OnInit {
     }
   }
 
+  clearDateCount() {
+    clearInterval(this.interval);
+  }
+
 }
 
 export class Forgot {

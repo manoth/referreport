@@ -10,7 +10,7 @@
             </h3>
 
             <div class="box-tools">
-                <div class="input-group input-group-sm hidden-xs" style="width: 150px;">
+                <div class="input-group input-group-sm hidden-xs" style="width: 220px;">
                     <input type="text" [(ngModel)]="search" name="search" class="form-control pull-right"
                         placeholder="Search">
 
@@ -24,21 +24,55 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="box-body">
-                <div class="form-group">
+                <div class="row">
+                    <label class="col-sm-12 control-label text-center" style="margin-top: 7px;">
+                        <i class="fa fa-exchange" aria-hidden="true"></i>
+                        จากวันที่ {{ beginDate | thaidate:'medium' }} ถึง {{ endDate | thaidate:'medium' }}
+                    </label>
+                </div>
+                <div class="row">
                     <label class="col-sm-2 control-label" style="margin-top: 7px;">
                         <i class="fa fa-calendar" aria-hidden="true"></i>
                         เลือกช่วงวันที่:
                     </label>
-                    <div class="col-sm-5">
+                    <div class="col-sm-4">
                         <my-date-range-picker name="mydaterange" [options]="myDateRangePickerOptions"
                             [(ngModel)]="model" (dateRangeChanged)="onDateRangeChanged($event)"
                             placeholder="กรุณาเลือกช่วงวันที่" required>
                         </my-date-range-picker>
                     </div>
-                    <label class="col-sm-5 control-label pull-right" style="margin-top: 7px;">
-                        <i class="fa fa-exchange" aria-hidden="true"></i>
-                        จากวันที่ {{ beginDate | thaidate:'medium' }} ถึง {{ endDate | thaidate:'medium' }}
+                    <label class="col-sm-2 control-label" style="margin-top: 7px;">
+                        <i class="fa fa-hospital-o" aria-hidden="true"></i>
+                        เลือกแผนก:
                     </label>
+                    <div class="col-sm-3">
+                        <select (change)="onClinic(clinic)" [(ngModel)]="clinic" name="clinic" id="clinic"
+                            class="col-xs-3 col-sm-3 form-control">
+                            <option value="">== ทั้งหมด ==</option>
+                            <option *ngFor="let l of clinicGroup" [value]="l?.ClinicGroup_id">
+                                {{ l?.ClinicGroup_name }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6 hidden-xs"> </div>
+                    <label class="col-sm-2 control-label" style="margin-top: 7px;">
+                        <i class="fa fa-ambulance" aria-hidden="true"></i>
+                        การเดินทาง:
+                    </label>
+                    <div class="col-sm-3">
+                        <select (change)="onLoads()" [(ngModel)]="loads" name="loads" id="loads"
+                            class="col-xs-3 col-sm-3 form-control">
+                            <option value="">== ทั้งหมด ==</option>
+                            <option value="ผู้ป่วยเดินทางเอง">
+                                ผู้ป่วยเดินทางเอง
+                            </option>
+                            <option value="รถ">
+                                รถ Refer ทั้งหมด
+                            </option>
+                        </select>
+                    </div>
                 </div>
             </div>
             <app-refer-list *ngIf="path!='referin'" [lists]="lists" [path]="path" [search]="search"
@@ -67,12 +101,12 @@
                 <div class="tab-content">
                     <div class="tab-pane" id="tab1" [class.active]="!tabId">
                         <app-refer-list [accept]="accept" [lists]="lists" [path]="path" [search]="search"
-                            (tokenNo)="toDetail($event)">
+                            [clinic]="clinic" [loads]="loads" (tokenNo)="toDetail($event)">
                         </app-refer-list>
                     </div>
                     <div class="tab-pane" id="accept" [class.active]="tabId=='accept'">
                         <app-refer-list [accept]="accept" [lists]="lists" [path]="path" [search]="search"
-                            (tokenNo)="toDetail($event)">
+                            [clinic]="clinic" [loads]="loads" (tokenNo)="toDetail($event)">
                         </app-refer-list>
                     </div>
                 </div>

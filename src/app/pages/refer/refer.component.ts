@@ -26,8 +26,12 @@ export class ReferComponent implements OnInit {
   loading: boolean = true;
 
   countReferIn: number;
+  clinic: any;
+  clinicGroup: any;
+  loads: string = '';
 
   constructor(
+    @Inject('TOKENNAME') private tokenName: string,
     @Inject('REFER_HOSPCODE') private hospcode: string,
     private route: ActivatedRoute,
     private main: MainService
@@ -83,10 +87,33 @@ export class ReferComponent implements OnInit {
       this.getReferinList(this.beginDate, this.endDate, this.path, this.accept);
       this.getNonRead();
     });
+    this.getClinicgroup();
+    let decoded = this.main.decodeToken();
+    this.clinic = decoded.clinic_group || '';
+  }
+
+  getClinicgroup() {
+    this.main.get('refer/clinicgroup').then((row: any) => {
+      this.clinicGroup = row.data;
+    });
+  }
+
+  onClinic(clinic: any) {
+    this.main.post('adduser/updateClinic', { clinic_group: clinic }).then((res: any) => {
+      if (res.ok) {
+        localStorage.setItem(this.tokenName, res.token);
+        this.main.decodeToken();
+        this.getNonRead();
+      }
+    });
+  }
+
+  onLoads() {
+    this.getNonRead();
   }
 
   getNonRead() {
-    this.main.post('refer/listcount', { beginDate: this.beginDate, endDate: this.endDate }).then((row: any) => {
+    this.main.post('refer/listcount', { beginDate: this.beginDate, endDate: this.endDate, loads: this.loads }).then((row: any) => {
       if (row.ok) {
         this.countReferIn = row.list.count;
         this.main.listReferIn(this.countReferIn);
@@ -99,8 +126,12 @@ export class ReferComponent implements OnInit {
       this.loading = false;
       if (rows.ok) {
         this.lists = rows.datas;
+      } else {
+        this.main.logOut();
       }
-    });
+    }).catch((err: any) => {
+      this.main.logOut();
+    })
   }
 
   onDateRangeChanged(e) {
