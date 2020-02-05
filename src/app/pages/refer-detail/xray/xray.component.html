@@ -1,0 +1,31 @@
+<div class="box box-success box-solid">
+    <div class="box-header with-border">
+        <h3 class="box-title">X-Ray</h3>
+
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+        </div>
+        <!-- /.box-tools -->
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+        <div class="box-body table-responsive no-padding">
+            <table class="table table-hover">
+                <tbody>
+                    <tr>
+                        <th>ID</th>
+                        <th>Request No.</th>
+                        <th>X-Ray Room</th>
+                        <th>Result Value</th>
+                    </tr>
+                    <tr *ngFor="let item of xray;let i=index">
+                        <td>{{ i+1 }}</td>
+                        <td>{{item.reqno}}</td>
+                        <td>{{item.xrayroom}}</td>
+                        <td>{{item.resvalue}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

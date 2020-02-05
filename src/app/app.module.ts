@@ -25,6 +25,8 @@ import { SortByPipe } from './pipes/sortby.pipe';
 
 import { DragDirective } from './directive/drag-drop.directive';
 
+import { ExcelService } from './services/excel.service';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
@@ -49,6 +51,8 @@ import { ChatroomComponent } from './pages/chatroom/chatroom.component';
 import { ForgotComponent } from './forgot/forgot.component';
 import { MapsComponent } from './pages/refer-detail/maps/maps.component';
 import { AmbulanceComponent } from './ambulance/ambulance.component';
+import { XrayComponent } from './pages/refer-detail/xray/xray.component';
+import { ReportComponent } from './pages/report/report.component';
 
 
 
@@ -84,7 +88,9 @@ import { AmbulanceComponent } from './ambulance/ambulance.component';
     ChatroomComponent,
     ForgotComponent,
     MapsComponent,
-    AmbulanceComponent
+    AmbulanceComponent,
+    XrayComponent,
+    ReportComponent
   ],
   imports: [
     BrowserModule,
@@ -103,6 +109,7 @@ import { AmbulanceComponent } from './ambulance/ambulance.component';
   ],
   providers: [
     GoogleMapsAPIWrapper,
+    ExcelService,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptorService, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptorService, multi: true },
     { provide: 'apiUrl', useValue: environment.apiUrl },

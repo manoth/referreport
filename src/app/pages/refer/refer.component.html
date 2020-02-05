@@ -75,8 +75,8 @@
                     </div>
                 </div>
             </div>
-            <app-refer-list *ngIf="path!='referin'" [lists]="lists" [path]="path" [search]="search"
-                (tokenNo)="toDetail($event)"></app-refer-list>
+            <app-refer-list *ngIf="path!='referin'" [lists]="lists" [path]="path" [search]="search" [clinic]="clinic"
+                [loads]="loads" (tokenNo)="toDetail($event)"></app-refer-list>
             <div class="nav-tabs-custom" *ngIf="path=='referin'">
                 <ul class="nav nav-tabs">
                     <li [class.active]="!tabId">

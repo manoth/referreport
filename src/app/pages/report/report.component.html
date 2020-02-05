@@ -1,0 +1,89 @@
+<section class="content">
+    <div class="box box-primary box-solid">
+        <div class="overlay" *ngIf="loading">
+            <i class="fa fa-refresh fa-spin"></i>
+        </div>
+        <div class="box-header with-border">
+            <h3 class="box-title">
+                <i class="fa" [ngClass]="topic?.icon"></i>
+                {{ topic?.report_name }}
+            </h3>
+
+            <div class="box-tools">
+                <button (click)="onToExcel()" type="button" class="btn btn-success">
+                    <i class="fa fa-file-excel-o"></i>
+                    ส่งออก Excel
+                </button>
+            </div>
+            <!-- /.box-tools -->
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="box-body">
+                <div *ngIf="topic && topic.show_year=='1'" class="row">
+                    <label class="col-sm-12 control-label text-center" style="margin-top: 7px;">
+                        <i class="fa fa-exchange" aria-hidden="true"></i>
+                        ช่วงวันที่รายงาน {{ beginDate | thaidate:'medium' }} ถึง {{ endDate | thaidate:'medium' }}
+                    </label>
+                </div>
+                <div *ngIf="topic && topic.show_year=='1'" class="row">
+                    <label class="col-sm-2 control-label" style="margin-top: 7px;">
+                        <i class="fa fa-calendar" aria-hidden="true"></i>
+                        เลือกช่วงวันที่:
+                    </label>
+                    <div class="col-sm-4">
+                        <my-date-range-picker name="mydaterange" [options]="myDateRangePickerOptions"
+                            [(ngModel)]="mydaterange" (dateRangeChanged)="onDateRangeChanged($event)"
+                            placeholder="กรุณาเลือกช่วงวันที่" required>
+                        </my-date-range-picker>
+                    </div>
+                    <label *ngIf="topic && topic.report_sub" class="col-sm-2 control-label" style="margin-top: 7px;">
+                        <i class="fa fa-map-marker" aria-hidden="true"></i>
+                        เลือกจังหวัด:
+                    </label>
+                    <div *ngIf="topic && topic.report_sub" class="col-sm-3">
+                        <select (change)="onProv(provcode)" [(ngModel)]="provcode" name="provcode" id="provcode"
+                            class="col-xs-3 col-sm-3 form-control">
+                            <option value="">== ทั้งหมด ==</option>
+                            <option *ngFor="let p of provAll" [value]="p?.changwatcode">
+                                {{ p?.changwatname }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <p></p>
+                </div>
+                <div class="row">
+                    <div class="table-responsive no-padding">
+                        <table class="table table-bordered table-hover table-striped headercenter">
+                            <thead>
+                                <tr
+                                    *ngIf="topic && ((!provcode && !topic.report_header) || (provcode && !topic.report_sub_header))">
+                                    <th *ngFor="let h of report[0] | keyvalue: originalOrder">
+                                        {{ h.key }}
+                                    </th>
+                                </tr>
+                                <tr
+                                    *ngIf="topic && ((!provcode && topic.report_header) || (provcode && topic.report_sub_header))">
+                                    <th
+                                        *ngFor="let h of (!provcode)?topic.report_header.split(','):topic.report_sub_header.split(',')">
+                                        {{ h }}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let row of report">
+                                    <td *ngFor="let r of row | keyvalue: originalOrder; let i=index;"
+                                        [ngClass]="(topic.text_align)?topic.text_align.split(',')[i]:null">
+                                        {{ row[r.key] }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 
 import { MainService } from 'src/app/services/main.service';
+import { CryptoService } from 'src/app/services/crypto.service';
 declare const $: any;
 
 @Component({
@@ -27,19 +28,23 @@ export class HeaderComponent implements OnInit {
   countReferIn: number = 0;
   arrReferNo: any = [];
 
+  reportList: any;
+
   constructor(
     @Inject('SYSTEMNAME') private titleName: string,
     @Inject('REFER_TOKEN') private referToken: string,
     @Inject('REFER_HOSPCODE') private hospcode: string,
     private title: Title,
     private router: Router,
-    private main: MainService
+    private main: MainService,
+    private crypto: CryptoService
   ) { }
 
   ngOnInit() {
     this.getNonReadChat();
     this.getListCountRefer();
     this.getNonReadComment();
+    this.getReport();
 
     this.main.eventOver.subscribe(() => {
       this.clearCountAlert();
@@ -66,6 +71,12 @@ export class HeaderComponent implements OnInit {
     });
     this.socket.on(`title-chat-${this.room}`, (username: any) => {
       (username && this.user.username != username) ? this.titleMessage() : this.countAlert = 0;
+    });
+  }
+
+  getReport() {
+    this.main.get('report/list').then((res: any) => {
+      this.reportList = res.data;
     });
   }
 

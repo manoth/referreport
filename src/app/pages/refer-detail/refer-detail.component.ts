@@ -19,6 +19,7 @@ export class ReferDetailComponent implements OnInit {
   treatment: any;
   drug: any;
   lab: any;
+  xray: any;
   path: string;
   header: any;
   toDiscussion: any;
@@ -57,6 +58,7 @@ export class ReferDetailComponent implements OnInit {
         this.getTreatment(this.referId);
         this.getDrug(this.referId);
         this.getLab(this.referId);
+        this.getXray(this.referId);
         this.main.inputHeader(this.header);
       } catch (err) {
         this.router.navigate(['/' + this.path]);
@@ -120,6 +122,20 @@ export class ReferDetailComponent implements OnInit {
       // console.log(row);
       if (row.ok) {
         this.lab = row.data;
+      } else {
+        this.main.logOut();
+      }
+    }).catch((err: any) => {
+      this.router.navigate(['/']);
+    });
+  }
+
+  // tslint:disable-next-line:variable-name xray
+  getXray(refer_no: string) {
+    this.main.post('refer/xray', { refer_no }).then((row: any) => {
+      // console.log(row);
+      if (row.ok) {
+        this.xray = row.data;
       } else {
         this.main.logOut();
       }

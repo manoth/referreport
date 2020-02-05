@@ -35,6 +35,7 @@
                 <app-tab2 *ngIf="loading" [tab2]="treatment"></app-tab2>
                 <app-tab3 *ngIf="loading" [tab3]="drug"></app-tab3>
                 <app-tab4 *ngIf="loading" [tab4]="lab"></app-tab4>
+                <app-xray *ngIf="loading" [xray]="xray"></app-xray>
             </div>
             <div class="tab-pane" id="comment" [class.active]="tabId=='comment'">
                 <app-tab5 *ngIf="loading" [detail]="detail" [socket]="socket" [referNo]="detail?.refer_no"
