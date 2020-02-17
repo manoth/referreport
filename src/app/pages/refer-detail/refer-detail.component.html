@@ -27,7 +27,7 @@
         </ul>
         <div class="tab-content">
             <div class="tab-pane" id="detail" [class.active]="tabId=='detail'|| !tabId">
-                <div class="boxLoading" *ngIf="!loading"></div>
+                <div class="preLoader" *ngIf="!loading"></div>
                 <app-tab0 *ngIf="loading" [detail]="detail"></app-tab0>
                 <app-tab1 *ngIf="loading" [tab1]="detail" [path]="path" (cancel)="doCancel($event)"
                     (save)="doSave($event)" (resend)="doResend($event)">

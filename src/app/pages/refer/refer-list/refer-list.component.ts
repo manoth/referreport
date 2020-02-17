@@ -28,7 +28,7 @@ export class ReferListComponent implements OnInit {
   }
 
   replaceHospname(hospname: string) {
-    return hospname.replace('โรงพยาบาล', 'รพ.').replace('ส่งเสริมสุขภาพตําบล', 'สต.').replace('เฉลิมพระเกียรติ', 'ฯ');
+    return hospname.replace('โรงพยาบาล', 'รพ.').replace('ส่งเสริมสุขภาพตําบล', 'สต.');
   }
 
   onCancel(l: any) {
@@ -62,7 +62,8 @@ export class ReferListComponent implements OnInit {
   qrCodeData: string;
   onTracking(url: string) {
     let host = window.location.protocol + '//' + window.location.host + '/ref/ambulance/';
-    this.qrCodeData = host + url.replace('==', '').replace('=', '');
+    // this.qrCodeData = host + url.replace('==', '').replace('=', '');
+    this.qrCodeData = host + url.split('=').join('');
   }
 
 }

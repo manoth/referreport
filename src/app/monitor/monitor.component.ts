@@ -129,7 +129,7 @@ export class MonitorComponent implements OnInit {
   }
 
   replaceHospname(hospname: string) {
-    return hospname.replace('โรงพยาบาล', 'รพ.').replace('ส่งเสริมสุขภาพตําบล', 'สต.').replace('เฉลิมพระเกียรติ', 'ฯ');
+    return hospname.replace('โรงพยาบาล', 'รพ.').replace('ส่งเสริมสุขภาพตําบล', 'สต.');
   }
 
   goFullscreen() {

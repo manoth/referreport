@@ -43,10 +43,10 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
+    // console.log(this.sign);
     if (this.sign.username && this.sign.password) {
       const sign: any = { username: this.sign.username, password: this.crypto.md5(this.sign.password) }
       this.main.post('login', sign).then((row: any) => {
-        // console.log(row);
         if (row.ok) {
           localStorage.setItem(this.tokenName, row.token);
           const toDetail = sessionStorage.getItem(this.referPath);
